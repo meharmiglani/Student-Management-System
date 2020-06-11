@@ -1,5 +1,4 @@
 package com.flipkart.service;
 
-public class ProfessorCRUD{
-
+public class AdminOperation {
 }

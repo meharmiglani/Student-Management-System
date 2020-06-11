@@ -1,6 +1,6 @@
 package com.flipkart.service;
 
-public class ProfessorTasks {
+public class ProfessorTaskOperation {
 
     // View student list (professor id)
 

@@ -2,11 +2,12 @@ package com.flipkart.model;
 
 public class Student extends User{
     private int studentId;
-    boolean isScholarship;
+    private boolean isScholar;
 
-    public Student(int studentId, String username, String password, String name, String email) {
+    public Student(int studentId, String username, String password, String name, String email, boolean isScholar){
         super(username, password, name, email);
         this.studentId = studentId;
+        this.isScholar = isScholar;
     }
 
     public int getStudentId() {
@@ -18,10 +19,10 @@ public class Student extends User{
     }
 
     public boolean isScholarship() {
-        return isScholarship;
+        return isScholar;
     }
 
-    public void setScholarship(boolean scholarship) {
-        isScholarship = scholarship;
+    public void setScholarship(boolean scholar) {
+        isScholar = scholar;
     }
 }

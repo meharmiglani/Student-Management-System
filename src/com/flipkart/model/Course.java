@@ -3,13 +3,13 @@ package com.flipkart.model;
 public class Course {
     private String courseName;
     private int courseId;
-    private String professor;
+    private int professorId;
     private int credits;
 
-    public Course(String courseName, int courseId, String professor, int credits, int semester) {
+    public Course(int courseId, String courseName, int professorId, int credits) {
         this.courseName = courseName;
         this.courseId = courseId;
-        this.professor = professor;
+        this.professorId = professorId;
         this.credits = credits;
     }
 
@@ -29,12 +29,12 @@ public class Course {
         this.courseId = courseId;
     }
 
-    public String getProfessor() {
-        return professor;
+    public int getProfessor() {
+        return professorId;
     }
 
-    public void setProfessor(String professor) {
-        this.professor = professor;
+    public void setProfessor(int professorId) {
+        this.professorId = professorId;
     }
 
     public int getCredits() {

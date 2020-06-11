@@ -1,4 +1,4 @@
 package com.flipkart.dao;
 
-public class AdminDao {
+public interface AdminDao {
 }

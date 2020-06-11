@@ -1,6 +1,6 @@
 package com.flipkart.service;
 
-public class StudentTasks {
+public class StudentTaskOperation {
 
     //view catalog
 

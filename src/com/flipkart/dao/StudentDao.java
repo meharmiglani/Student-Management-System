@@ -1,4 +1,9 @@
 package com.flipkart.dao;
 
-public class StudentDao {
+import com.flipkart.model.Student;
+
+public interface StudentDao {
+    boolean insertStudent(Student student);
+    boolean deleteStudent(int studentId);
+    boolean updateStudent(int studentId, Student newStudent);
 }
