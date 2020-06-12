@@ -4,13 +4,39 @@ public class Course {
     private String courseName;
     private int courseId;
     private int professorId;
+    private String professorName;
     private int credits;
+    private int countOfStudents;
 
-    public Course(int courseId, String courseName, int professorId, int credits) {
+    public Course(int courseId, String courseName){
+        this.courseId = courseId;
+        this.courseName = courseName;
+    }
+
+    public Course(int courseId, String courseName, String professorName){
+        this.courseId = courseId;
+        this.courseName = courseName;
+        this.professorName = professorName;
+    }
+
+    public Course(int courseId, String courseName, int countOfStudents){
+        this.courseId = courseId;
+        this.courseName = courseName;
+        this.countOfStudents = countOfStudents;
+    }
+
+    public Course(String courseName, int courseId, int credits){
+        this.courseName = courseName;
+        this.courseId = courseId;
+        this.credits = credits;
+    }
+
+    public Course(int courseId, String courseName, String professorName, int professorId, int credits) {
         this.courseName = courseName;
         this.courseId = courseId;
         this.professorId = professorId;
         this.credits = credits;
+        this.professorName = professorName;
     }
 
     public String getCourseName() {
@@ -29,20 +55,19 @@ public class Course {
         this.courseId = courseId;
     }
 
-    public int getProfessor() {
-        return professorId;
-    }
-
-    public void setProfessor(int professorId) {
-        this.professorId = professorId;
-    }
-
     public int getCredits() {
         return credits;
     }
 
-    public void setCredits(int credits) {
-        this.credits = credits;
+    public int getProfessorId() {
+        return professorId;
     }
 
+    public String getProfessorName() {
+        return professorName;
+    }
+
+    public int getCountOfStudents() {
+        return countOfStudents;
+    }
 }

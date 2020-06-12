@@ -1,9 +1,9 @@
 package com.flipkart.dao;
 
-import com.flipkart.model.Catalog;
+import com.flipkart.model.Course;
 
 import java.util.List;
 
 public interface CourseCatalogDao {
-    List<Catalog> viewCourseCatalog();
+    List<Course> viewCourseCatalog();
 }

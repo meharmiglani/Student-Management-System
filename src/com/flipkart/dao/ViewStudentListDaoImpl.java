@@ -1,6 +1,7 @@
 package com.flipkart.dao;
 
 import com.flipkart.constant.SQLConstantQueries;
+import com.flipkart.java8.CloseConnectionInterface;
 import com.flipkart.model.Result;
 import com.flipkart.model.StudentList;
 import com.flipkart.utils.DBUtil;
@@ -13,7 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewStudentListDaoImpl implements ViewStudentListDao{
+public class ViewStudentListDaoImpl implements ViewStudentListDao, CloseConnectionInterface {
     private static Logger logger = Logger.getLogger(ViewStudentListDaoImpl.class);
 
     @Override
@@ -30,7 +31,8 @@ public class ViewStudentListDaoImpl implements ViewStudentListDao{
             while(resultSet.next()){
                 String name = resultSet.getString(1);
                 int studentId = resultSet.getInt(2);
-                StudentList student = new StudentList(name, studentId);
+                String courseName = resultSet.getString(3);
+                StudentList student = new StudentList(name, studentId, courseName);
                 list.add(student);
             }
             return list;
@@ -39,23 +41,36 @@ public class ViewStudentListDaoImpl implements ViewStudentListDao{
             logger.error(e.getMessage());
             return null;
         }finally {
+            closeConnection(statement, conn);
+        }
+    }
 
-            //Close the all connections and statements
-            try {
-                if(statement != null) {
-                    statement.close();
-                }
-            }catch(SQLException e) {
-                logger.error(e.getMessage());
-            }
+    @Override
+    public List<StudentList> studentListByCourseId(int professorId, int courseId) {
+        List<StudentList> list = new ArrayList<>();
+        Connection conn = DBUtil.getConnection();
+        PreparedStatement statement = null;
 
-            try {
-                if(conn != null) {
-                    conn.close();
-                }
-            }catch(SQLException e) {
-                logger.error(e.getMessage());
+        try{
+            statement = conn.prepareStatement(SQLConstantQueries.VIEW_STUDENT_LIST_BY_COURSE_ID);
+            statement.setInt(1, professorId);
+            statement.setInt(2, courseId);
+            ResultSet resultSet = statement.executeQuery();
+
+            while(resultSet.next()){
+                String name = resultSet.getString(1);
+                int studentId = resultSet.getInt(2);
+                String courseName = resultSet.getString(3);
+                StudentList student = new StudentList(name, studentId, courseName);
+                list.add(student);
             }
+            return list;
+
+        }catch (SQLException e){
+            logger.error(e.getMessage());
+            return null;
+        }finally {
+            closeConnection(statement, conn);
         }
     }
 }

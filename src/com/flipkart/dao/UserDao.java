@@ -5,4 +5,5 @@ import com.flipkart.model.User;
 public interface UserDao {
     int checkIdentity(String username, String password);
     String getStudentName(int studentId);
+    String getRole(String username, String password);
 }

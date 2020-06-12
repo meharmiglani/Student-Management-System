@@ -1,6 +1,7 @@
 package com.flipkart.dao;
 
 import com.flipkart.constant.SQLConstantQueries;
+import com.flipkart.java8.CloseConnectionInterface;
 import com.flipkart.utils.DBUtil;
 import org.apache.log4j.Logger;
 
@@ -9,7 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserDaoImpl implements UserDao{
+public class UserDaoImpl implements UserDao, CloseConnectionInterface {
     private static Logger logger = Logger.getLogger(UserDaoImpl.class);
 
     @Override
@@ -31,24 +32,8 @@ public class UserDaoImpl implements UserDao{
         }catch (SQLException e){
             logger.error(e.getMessage());
             return -1;
-        }finally {
-            //Close the statement
-            try {
-                if(statement != null) {
-                    statement.close();
-                }
-            }catch(SQLException e) {
-                logger.error(e.getMessage());
-            }
-
-            //Close the connection
-            try {
-                if(conn != null) {
-                    conn.close();
-                }
-            }catch(SQLException e) {
-                logger.error(e.getMessage());
-            }
+        }finally{
+            closeConnection(statement, conn);
         }
     }
 
@@ -73,23 +58,31 @@ public class UserDaoImpl implements UserDao{
             logger.error(e.getMessage());
             return "";
         }finally {
-            //Close the statement
-            try {
-                if(statement != null) {
-                    statement.close();
-                }
-            }catch(SQLException e) {
-                logger.error(e.getMessage());
-            }
+            closeConnection(statement, conn);
+        }
+    }
 
-            //Close the connection
-            try {
-                if(conn != null) {
-                    conn.close();
-                }
-            }catch(SQLException e) {
-                logger.error(e.getMessage());
+    @Override
+    public String getRole(String username, String password) {
+        Connection conn = DBUtil.getConnection();
+        PreparedStatement statement = null;
+
+        try {
+            statement = conn.prepareStatement(SQLConstantQueries.GET_ROLE);
+            statement.setString(1, username);
+            statement.setString(2, password);
+            ResultSet result = statement.executeQuery();
+
+            if (result.next()) {
+                String  role = result.getString(1);
+                return role;
             }
+            return "";
+        }catch (SQLException e){
+            logger.error(e.getMessage());
+            return "";
+        }finally {
+            closeConnection(statement, conn);
         }
     }
 }

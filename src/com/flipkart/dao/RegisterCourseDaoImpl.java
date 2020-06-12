@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class RegisterCourseDaoImpl implements RegisterCourseDao{
-    private static Logger logger = Logger.getLogger(RegisterCourseDaoImpl.class);
+    private final static Logger logger = Logger.getLogger(RegisterCourseDaoImpl.class);
 
 
     @Override
@@ -19,8 +19,19 @@ public class RegisterCourseDaoImpl implements RegisterCourseDao{
         PreparedStatement statement1 = null;
         PreparedStatement statement2 = null;
         PreparedStatement statement3 = null;
+        PreparedStatement statement4 = null;
 
         try{
+            statement4 = conn.prepareStatement(SQLConstantQueries.CHECK_COURSE_EXISTENCE);
+            statement4.setInt(1,courseId);
+            ResultSet resultSet = statement4.executeQuery();
+
+            if(!resultSet.next()){
+                logger.error("The chosen course does not exist");
+                return false;
+            }
+
+            String courseName = resultSet.getString(1);
             statement1 = conn.prepareStatement(SQLConstantQueries.COUNT_OF_STUDENTS);
             statement1.setInt(1, courseId);
             ResultSet result = statement1.executeQuery();
@@ -39,8 +50,9 @@ public class RegisterCourseDaoImpl implements RegisterCourseDao{
                 statement3 = conn.prepareStatement(SQLConstantQueries.ADD_COURSE);
                 statement3.setInt(1, courseId);
                 statement3.setInt(2, studentId);
-                statement3.setString(3, studentName);
-                statement3.setString(4, alternate);
+                statement3.setString(3, courseName);
+                statement3.setString(4, studentName);
+                statement3.setString(5, alternate);
                 int rows = statement3.executeUpdate();
                 return rows == 1;
             }else{
@@ -64,6 +76,10 @@ public class RegisterCourseDaoImpl implements RegisterCourseDao{
 
                 if(statement3 != null) {
                     statement3.close();
+                }
+
+                if(statement4 != null){
+                    statement4.close();
                 }
 
             }catch(SQLException e) {

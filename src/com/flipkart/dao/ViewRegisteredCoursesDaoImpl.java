@@ -1,7 +1,7 @@
 package com.flipkart.dao;
 
 import com.flipkart.constant.SQLConstantQueries;
-import com.flipkart.model.RegisteredCourses;
+import com.flipkart.model.Course;
 import com.flipkart.utils.DBUtil;
 import org.apache.log4j.Logger;
 
@@ -15,8 +15,8 @@ import java.util.List;
 public class ViewRegisteredCoursesDaoImpl implements ViewRegisteredCoursesDao{
     private static Logger logger = Logger.getLogger(ViewRegisteredCoursesDaoImpl.class);
     @Override
-    public List<RegisteredCourses> viewRegisteredCourses(int studentId) {
-        List<RegisteredCourses> list = new ArrayList<>();
+    public List<Course> viewRegisteredCourses(int studentId) {
+        List<Course> list = new ArrayList<>();
         Connection conn = DBUtil.getConnection();
         PreparedStatement statement = null;
 
@@ -26,13 +26,12 @@ public class ViewRegisteredCoursesDaoImpl implements ViewRegisteredCoursesDao{
             ResultSet resultSet = statement.executeQuery();
 
             while(resultSet.next()){
-                String name = resultSet.getString(1);
-                int professorId = resultSet.getInt(2);
-                int credits = resultSet.getInt(3);
-                RegisteredCourses registeredCourses = new RegisteredCourses(name, professorId, credits);
-                list.add(registeredCourses);
+                int courseId = resultSet.getInt(1);
+                String courseName = resultSet.getString(2);
+                String professorName = resultSet.getString(3);
+                Course course = new Course(courseId, courseName, professorName);
+                list.add(course);
             }
-
             return list;
 
         }catch(SQLException e){

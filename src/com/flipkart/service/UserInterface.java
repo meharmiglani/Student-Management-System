@@ -5,5 +5,7 @@ import com.flipkart.exception.UsernameAlreadyExistsException;
 import com.flipkart.model.User;
 
 public interface UserInterface {
-
+    int checkIdentity(String username, String password) throws UserNotFoundException;
+    String getStudentName(int studentId) throws UserNotFoundException;
+    String getRole(String username, String password);
 }

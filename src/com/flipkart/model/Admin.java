@@ -11,7 +11,7 @@ public class Admin extends User{
         return adminId;
     }
 
-    public void setAdminId(int adminId) {
+    public void setAdminId(int adminId){
         this.adminId = adminId;
     }
 }
