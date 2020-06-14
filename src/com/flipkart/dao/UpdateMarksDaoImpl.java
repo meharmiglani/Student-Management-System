@@ -1,7 +1,7 @@
 package com.flipkart.dao;
 
 import com.flipkart.constant.SQLConstantQueries;
-import com.flipkart.java8.CloseConnectionInterface;
+import com.flipkart.utils.CloseConnectionInterface;
 import com.flipkart.utils.DBUtil;
 import org.apache.log4j.Logger;
 
@@ -13,7 +13,8 @@ public class UpdateMarksDaoImpl implements UpdateMarksDao, CloseConnectionInterf
     private final static Logger logger = Logger.getLogger(UpdateMarksDaoImpl.class);
 
     @Override
-    public boolean updateStudentMarks(int studentId, int courseId, int marks) {
+    public boolean updateStudentMarks(int studentId, int courseId, int marks){
+
         Connection conn = DBUtil.getConnection();
         PreparedStatement statement = null;
 

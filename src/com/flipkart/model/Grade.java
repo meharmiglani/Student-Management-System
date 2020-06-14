@@ -1,11 +1,11 @@
 package com.flipkart.model;
 
-public class Result {
+public class Grade {
     int courseId;
     String courseName;
     int marks;
 
-    public Result(int courseId, String courseName, int marks) {
+    public Grade(int courseId, String courseName, int marks) {
         this.courseId = courseId;
         this.courseName = courseName;
         this.marks = marks;

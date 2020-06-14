@@ -1,8 +1,7 @@
 package com.flipkart.dao;
 
 import com.flipkart.constant.SQLConstantQueries;
-import com.flipkart.java8.CloseConnectionInterface;
-import com.flipkart.model.Result;
+import com.flipkart.utils.CloseConnectionInterface;
 import com.flipkart.model.StudentList;
 import com.flipkart.utils.DBUtil;
 import org.apache.log4j.Logger;

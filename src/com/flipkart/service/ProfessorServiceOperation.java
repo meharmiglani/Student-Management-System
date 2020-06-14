@@ -1,6 +1,7 @@
 package com.flipkart.service;
 
 import com.flipkart.dao.CourseToTeachDaoImpl;
+import com.flipkart.dao.RegisterStudentDaoImpl;
 import com.flipkart.dao.UpdateMarksDaoImpl;
 import com.flipkart.dao.ViewStudentListDaoImpl;
 import com.flipkart.model.Course;
@@ -13,12 +14,14 @@ public class ProfessorServiceOperation implements ProfessorServiceInterface{
     private final ViewStudentListDaoImpl viewStudentListDao = new ViewStudentListDaoImpl();
     private final CourseToTeachDaoImpl courseToTeachDao = new CourseToTeachDaoImpl();
     private final UpdateMarksDaoImpl updateMarksDao = new UpdateMarksDaoImpl();
+    private final RegisterStudentDaoImpl registerStudentDao = new RegisterStudentDaoImpl();
 
     // View student list
     public void viewStudentList(int professorId){
         List<StudentList> list = viewStudentListDao.studentList(professorId);
+        logger.info(String.format("%20s %20s %20s", "Student ID", "Name", "Course Name"));
         if(list != null){
-            list.forEach(student -> logger.info(student.getName() + "   " + student.getStudentId() + "   " + student.getCourseName()));
+            list.forEach(student -> logger.info(String.format("%20s %20s %20s", student.getStudentId(), student.getName(), student.getCourseName())));
         }else{
             logger.error("No enrolled students");
         }
@@ -27,8 +30,9 @@ public class ProfessorServiceOperation implements ProfessorServiceInterface{
     // View student list by courseId
     public void viewStudentListByCourseId(int professorId, int courseId){
         List<StudentList> list = viewStudentListDao.studentListByCourseId(professorId, courseId);
+        logger.info(String.format("%20s %20s %20s", "Student ID", "Name", "Course Name"));
         if(list != null){
-            list.forEach(student -> logger.info(student.getName() + "   " + student.getStudentId() + "   " + student.getCourseName()));
+            list.forEach(student -> logger.info(String.format("%20s %20s %20s", student.getStudentId(), student.getName(), student.getCourseName())));
         }else{
             logger.error("No enrolled students");
         }
@@ -48,7 +52,8 @@ public class ProfessorServiceOperation implements ProfessorServiceInterface{
         List<Course> list = courseToTeachDao.viewCoursesAvailableToTeach();
         if(list != null){
             logger.info("************ AVAILABLE COURSES TO TEACH ****************");
-            list.forEach(course -> logger.info(course.getCourseId() + "    " + course.getCourseName()));
+            logger.info(String.format("%15s %15s", "COURSE ID", "COURSE NAME"));
+            list.forEach(course -> logger.info(String.format("%15s %15s", course.getCourseId(), course.getCourseName())));
             logger.info("********************************************************");
         }else{
             logger.error("List not available");
@@ -60,7 +65,8 @@ public class ProfessorServiceOperation implements ProfessorServiceInterface{
         List<Course> list = courseToTeachDao.coursesTeaching(professorId);
         if(list != null){
             logger.info("************ COURSES TAUGHT BY Professor ID: " + professorId + " ****************");
-            list.forEach(course -> logger.info(course.getCourseId() + "    " + course.getCourseName() + "   " + course.getCountOfStudents()));
+            logger.info(String.format("%20s %20s %20s", "Course ID","Course Name", "Count of Students"));
+            list.forEach(course -> logger.info(String.format("%20s %20s %20s", course.getCourseId(), course.getCourseName(), course.getCountOfStudents())));
             logger.info("*********************************************************************************");
         }else{
             logger.error("List not available");
@@ -74,5 +80,9 @@ public class ProfessorServiceOperation implements ProfessorServiceInterface{
         }else {
             logger.error("An error occurred, could not update marks");
         }
+    }
+
+    public boolean checkForRegistration(int studentId){
+        return registerStudentDao.checkRegistration(studentId);
     }
 }

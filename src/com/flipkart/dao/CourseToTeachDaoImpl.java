@@ -1,7 +1,7 @@
 package com.flipkart.dao;
 
 import com.flipkart.constant.SQLConstantQueries;
-import com.flipkart.java8.CloseConnectionInterface;
+import com.flipkart.utils.CloseConnectionInterface;
 import com.flipkart.model.Course;
 import com.flipkart.utils.DBUtil;
 import org.apache.log4j.Logger;
@@ -17,9 +17,10 @@ public class CourseToTeachDaoImpl implements CourseToTeachDao, CloseConnectionIn
     private static Logger logger = Logger.getLogger(CourseToTeachDaoImpl.class);
 
     @Override
-    public boolean selectCourse(int professorId, int courseId) {
+    public boolean selectCourse(int professorId, int courseId){
         Connection conn = DBUtil.getConnection();
         PreparedStatement statement = null;
+        PreparedStatement statement1 = null;
         try{
             statement = conn.prepareStatement(SQLConstantQueries.SELECT_COURSE_TO_TEACH_PROFESSOR);
             statement.setInt(1, professorId);
@@ -27,13 +28,19 @@ public class CourseToTeachDaoImpl implements CourseToTeachDao, CloseConnectionIn
             statement.setInt(3, 0);
             int row = statement.executeUpdate();
 
-            return row == 1;
+            statement1 = conn.prepareStatement(SQLConstantQueries.SELECT_COURSE_TO_TEACH_PROFESSOR_2);
+            statement1.setInt(1, professorId);
+            statement1.setInt(2, courseId);
+            int row1 = statement1.executeUpdate();
+
+            return row == 1 && row1 == 1;
 
         }catch (SQLException e){
             logger.info(e.getMessage());
             return false;
         }finally {
             closeConnection(statement, conn);
+            closeConnection(statement1, conn);
         }
     }
 

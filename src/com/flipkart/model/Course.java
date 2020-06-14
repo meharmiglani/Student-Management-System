@@ -7,6 +7,11 @@ public class Course {
     private String professorName;
     private int credits;
     private int countOfStudents;
+    private double fee;
+
+    public Course(){
+
+    }
 
     public Course(int courseId, String courseName){
         this.courseId = courseId;
@@ -69,5 +74,17 @@ public class Course {
 
     public int getCountOfStudents() {
         return countOfStudents;
+    }
+
+    public void setCredits(int credits) {
+        this.credits = credits;
+    }
+
+    public double getFee() {
+        return fee;
+    }
+
+    public void setFee(double fee) {
+        this.fee = fee;
     }
 }

@@ -30,6 +30,7 @@ public class DBUtil {
             String password = prop.getProperty("password");
             Class.forName(driver);
             return DriverManager.getConnection(url, user, password);
+
         } catch (ClassNotFoundException e) {
             logger.error(e.getMessage());
         } catch (SQLException e) {

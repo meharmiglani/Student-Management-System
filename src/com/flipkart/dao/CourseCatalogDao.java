@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface CourseCatalogDao {
     List<Course> viewCourseCatalog();
+    boolean addCourseToCatalog(Course course);
+    boolean deleteCourse(int courseId);
 }

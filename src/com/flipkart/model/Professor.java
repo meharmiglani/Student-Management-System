@@ -1,16 +1,25 @@
 package com.flipkart.model;
 
 public class Professor extends User{
-    private int professorId;
-    public Professor(String username, String password, String name, String email) {
-        super(username, password, name, email);
+    private String department;
+
+    public Professor(){
+
     }
 
-    public int getProfessorId(){
-        return professorId;
+    public Professor(int id, String username, String password, String name, String email) {
+        super(id, username, password, name, email, "professor");
     }
 
-    public void setProfessorId(int professorId) {
-        this.professorId = professorId;
+    public Professor(String username, int id, String name, String email) {
+        super(username, id, name, email);
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
     }
 }

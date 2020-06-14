@@ -1,6 +1,7 @@
 package com.flipkart.dao;
 
 import com.flipkart.constant.SQLConstantQueries;
+import com.flipkart.utils.CloseConnectionInterface;
 import com.flipkart.model.Course;
 import com.flipkart.utils.DBUtil;
 import org.apache.log4j.Logger;
@@ -12,8 +13,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewRegisteredCoursesDaoImpl implements ViewRegisteredCoursesDao{
-    private static Logger logger = Logger.getLogger(ViewRegisteredCoursesDaoImpl.class);
+public class ViewRegisteredCoursesDaoImpl implements ViewRegisteredCoursesDao, CloseConnectionInterface {
+    private final static Logger logger = Logger.getLogger(ViewRegisteredCoursesDaoImpl.class);
     @Override
     public List<Course> viewRegisteredCourses(int studentId) {
         List<Course> list = new ArrayList<>();
@@ -28,32 +29,17 @@ public class ViewRegisteredCoursesDaoImpl implements ViewRegisteredCoursesDao{
             while(resultSet.next()){
                 int courseId = resultSet.getInt(1);
                 String courseName = resultSet.getString(2);
-                String professorName = resultSet.getString(3);
-                Course course = new Course(courseId, courseName, professorName);
+                Course course = new Course(courseId, courseName);
                 list.add(course);
             }
             return list;
 
         }catch(SQLException e){
-            logger.error("Could not fetch list");
+            logger.error(e.getMessage());
             return null;
         }finally {
             //Close the all connections and statements
-            try {
-                if(statement != null) {
-                    statement.close();
-                }
-            }catch(SQLException e) {
-                logger.error(e.getMessage());
-            }
-
-            try {
-                if(conn != null) {
-                    conn.close();
-                }
-            }catch(SQLException e) {
-                logger.error(e.getMessage());
-            }
+            closeConnection(statement, conn);
         }
     }
 }

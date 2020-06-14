@@ -1,4 +1,4 @@
-package com.flipkart.java8;
+package com.flipkart.utils;
 
 import com.flipkart.dao.CourseCatalogDaoImpl;
 import com.flipkart.model.Course;

@@ -1,30 +1,41 @@
 package com.flipkart.model;
 
 public class Student extends User{
-    private int studentId;
-    private boolean isScholar;
-    String gender;
+    private double scholarshipAmount;
+    private String registrationStatus;
+    private String gender;
 
-    public Student(int studentId, String username, String password, String name, String email, boolean isScholar, String gender){
-        super(username, password, name, email);
-        this.studentId = studentId;
-        this.isScholar = isScholar;
+    public Student(){
+
+    }
+
+    public Student(int studentId, String username, String name, String email, double scholarshipAmount, String gender){
+        super(studentId, username, "", name, email, "student");
         this.gender = gender;
+        this.scholarshipAmount = scholarshipAmount;
     }
 
-    public int getStudentId() {
-        return studentId;
-    }
-
-    public void setStudentId(int studentId) {
-        this.studentId = studentId;
-    }
-
-    public boolean isScholarship() {
-        return isScholar;
+    public double getScholarshipAmount() {
+        return scholarshipAmount;
     }
 
     public String getGender() {
         return gender;
+    }
+
+    public void setScholarshipAmount(double scholarshipAmount) {
+        this.scholarshipAmount = scholarshipAmount;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getRegistrationStatus() {
+        return registrationStatus;
+    }
+
+    public void setRegistrationStatus(String registrationStatus) {
+        this.registrationStatus = registrationStatus;
     }
 }

@@ -82,6 +82,9 @@ public class ProfessorClient {
     public static void updateMarks(int professorId){
         logger.info("Enter student ID");
         int studentId = Integer.parseInt(scn.nextLine());
+//        if(!professorServiceOperation.checkForRegistration(studentId)){
+//            logger.info("Student isn't registered yet");
+//        }
         logger.info("Enter course ID");
         int courseId = Integer.parseInt(scn.nextLine());
         logger.info("Enter marks");
