@@ -63,7 +63,7 @@ public class UserDaoImpl implements UserDao, CloseConnectionInterface {
     }
 
     @Override
-    public String getRole(String username, String password) {
+    public int getRole(String username, String password) {
         Connection conn = DBUtil.getConnection();
         PreparedStatement statement = null;
 
@@ -74,13 +74,13 @@ public class UserDaoImpl implements UserDao, CloseConnectionInterface {
             ResultSet result = statement.executeQuery();
 
             if (result.next()) {
-                return result.getString(1);
+                return result.getInt(1);
             }
 
-            return "";
+            return -1;
         }catch (SQLException e){
             logger.error(e.getMessage());
-            return "";
+            return -1;
         }finally {
             closeConnection(statement, conn);
         }
@@ -96,9 +96,10 @@ public class UserDaoImpl implements UserDao, CloseConnectionInterface {
             statement.setInt(1, user.getId());
             statement.setString(2, user.getUsername());
             statement.setString(3, user.getPassword());
-            statement.setString(4, user.getRole());
-            int row = statement.executeUpdate();
-            return row == 1;
+            statement.setInt(4, user.getRoleId());
+            int row1 = statement.executeUpdate();
+
+            return row1 == 1;
 
         }catch (SQLException e){
             logger.error(e.getMessage());
@@ -109,7 +110,7 @@ public class UserDaoImpl implements UserDao, CloseConnectionInterface {
     }
 
     @Override
-    public String getRoleById(int userId) {
+    public int getRoleById(int userId) {
         Connection conn = DBUtil.getConnection();
         PreparedStatement statement = null;
         try{
@@ -118,13 +119,13 @@ public class UserDaoImpl implements UserDao, CloseConnectionInterface {
             ResultSet resultSet = statement.executeQuery();
 
             if(resultSet.next()){
-                return resultSet.getString(1);
+                return resultSet.getInt(1);
             }
-            return "";
+            return -1;
 
         }catch (SQLException e){
             logger.error(e.getMessage());
-            return "";
+            return -1;
         }finally {
             closeConnection(statement, conn);
         }
@@ -137,6 +138,27 @@ public class UserDaoImpl implements UserDao, CloseConnectionInterface {
         try{
             statement = conn.prepareStatement(SQLConstantQueries.DELETE_USER_TABLE);
             statement.setInt(1, userId);
+            int row1 = statement.executeUpdate();
+
+            return row1 == 1;
+
+        }catch (SQLException e){
+            logger.error(e.getMessage());
+            return false;
+        }finally {
+            closeConnection(statement, conn);
+        }
+    }
+
+    @Override
+    public boolean editUser(int userId, User user) {
+        Connection conn = DBUtil.getConnection();
+        PreparedStatement statement = null;
+        try{
+            statement = conn.prepareStatement(SQLConstantQueries.EDIT_USER);
+            statement.setString(1, user.getUsername());
+            statement.setString(2, user.getPassword());
+            statement.setInt(3, userId);
             int row = statement.executeUpdate();
             return row == 1;
 

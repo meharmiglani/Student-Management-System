@@ -31,7 +31,8 @@ public class ViewStudentListDaoImpl implements ViewStudentListDao, CloseConnecti
                 String name = resultSet.getString(1);
                 int studentId = resultSet.getInt(2);
                 String courseName = resultSet.getString(3);
-                StudentList student = new StudentList(name, studentId, courseName);
+                int marks = resultSet.getInt(4);
+                StudentList student = new StudentList(name, studentId, courseName, marks);
                 list.add(student);
             }
             return list;
@@ -60,7 +61,8 @@ public class ViewStudentListDaoImpl implements ViewStudentListDao, CloseConnecti
                 String name = resultSet.getString(1);
                 int studentId = resultSet.getInt(2);
                 String courseName = resultSet.getString(3);
-                StudentList student = new StudentList(name, studentId, courseName);
+                int marks = resultSet.getInt(4);
+                StudentList student = new StudentList(name, studentId, courseName, marks);
                 list.add(student);
             }
             return list;

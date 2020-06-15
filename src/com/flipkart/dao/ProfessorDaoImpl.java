@@ -72,7 +72,22 @@ public class ProfessorDaoImpl implements ProfessorDao, CloseConnectionInterface{
 
     @Override
     public boolean updateProfessor(int professorId, Professor newProfessor) {
-        return false;
+        Connection conn = DBUtil.getConnection();
+        PreparedStatement statement = null;
+        try{
+            statement = conn.prepareStatement(SQLConstantQueries.UPDATE_PROFESSOR);
+            statement.setString(1, newProfessor.getName());
+            statement.setString(2, newProfessor.getEmail());
+            statement.setInt(3, professorId);
+            int row = statement.executeUpdate();
+            return row == 1;
+
+        }catch (SQLException e){
+            logger.error(e.getMessage());
+            return false;
+        }finally {
+            closeConnection(statement, conn);
+        }
     }
 
     @Override

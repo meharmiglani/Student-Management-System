@@ -10,7 +10,7 @@ public class Student extends User{
     }
 
     public Student(int studentId, String username, String name, String email, double scholarshipAmount, String gender){
-        super(studentId, username, "", name, email, "student");
+        super(studentId, username, "", name, email, 3);
         this.gender = gender;
         this.scholarshipAmount = scholarshipAmount;
     }

@@ -19,20 +19,25 @@ public class ProfessorServiceOperation implements ProfessorServiceInterface{
     // View student list
     public void viewStudentList(int professorId){
         List<StudentList> list = viewStudentListDao.studentList(professorId);
-        logger.info(String.format("%20s %20s %20s", "Student ID", "Name", "Course Name"));
-        if(list != null){
-            list.forEach(student -> logger.info(String.format("%20s %20s %20s", student.getStudentId(), student.getName(), student.getCourseName())));
-        }else{
-            logger.error("No enrolled students");
-        }
+        displayStudentList(list);
     }
 
     // View student list by courseId
     public void viewStudentListByCourseId(int professorId, int courseId){
         List<StudentList> list = viewStudentListDao.studentListByCourseId(professorId, courseId);
-        logger.info(String.format("%20s %20s %20s", "Student ID", "Name", "Course Name"));
+        displayStudentList(list);
+    }
+
+    public void displayStudentList(List<StudentList> list){
+        logger.info(String.format("%20s %20s %20s %20s", "STUDENT ID", "NAME", "COURSE NAME", "MARKS"));
         if(list != null){
-            list.forEach(student -> logger.info(String.format("%20s %20s %20s", student.getStudentId(), student.getName(), student.getCourseName())));
+            list.forEach(student -> {
+                String marks = Integer.toString(student.getMarks());
+                if(marks.equals("-1")){
+                    marks = "Not uploaded";
+                }
+                logger.info(String.format("%20s %20s %20s %20s", student.getStudentId(), student.getName(), student.getCourseName(), marks));
+            });
         }else{
             logger.error("No enrolled students");
         }
@@ -52,8 +57,8 @@ public class ProfessorServiceOperation implements ProfessorServiceInterface{
         List<Course> list = courseToTeachDao.viewCoursesAvailableToTeach();
         if(list != null){
             logger.info("************ AVAILABLE COURSES TO TEACH ****************");
-            logger.info(String.format("%15s %15s", "COURSE ID", "COURSE NAME"));
-            list.forEach(course -> logger.info(String.format("%15s %15s", course.getCourseId(), course.getCourseName())));
+            logger.info(String.format("%15s %20s", "COURSE ID", "COURSE NAME"));
+            list.forEach(course -> logger.info(String.format("%15s %20s", course.getCourseId(), course.getCourseName())));
             logger.info("********************************************************");
         }else{
             logger.error("List not available");
@@ -65,7 +70,7 @@ public class ProfessorServiceOperation implements ProfessorServiceInterface{
         List<Course> list = courseToTeachDao.coursesTeaching(professorId);
         if(list != null){
             logger.info("************ COURSES TAUGHT BY Professor ID: " + professorId + " ****************");
-            logger.info(String.format("%20s %20s %20s", "Course ID","Course Name", "Count of Students"));
+            logger.info(String.format("%20s %20s %20s", "Course ID", "Course Name", "Count of Students"));
             list.forEach(course -> logger.info(String.format("%20s %20s %20s", course.getCourseId(), course.getCourseName(), course.getCountOfStudents())));
             logger.info("*********************************************************************************");
         }else{

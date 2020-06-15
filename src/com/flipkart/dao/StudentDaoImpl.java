@@ -49,7 +49,14 @@ public class StudentDaoImpl implements StudentDao, CloseConnectionInterface {
             statement = conn.prepareStatement(SQLConstantQueries.DELETE_STUDENT_TABLE);
             statement.setInt(1, studentId);
             int row = statement.executeUpdate();
-            return updateCountsOfCourses(studentId) && deleteRegisteredCourses(studentId) && row == 1;
+            deleteStudentRegistration(studentId);
+            if(!updateCountsOfCourses(studentId)){
+                logger.error("Could not update count of students");
+            }
+            if(!deleteRegisteredCourses(studentId)){
+                logger.error("Could not delete registered courses of the student");
+            }
+            return row == 1;
         }catch (SQLException e){
             logger.error(e.getMessage());
             return false;
@@ -59,8 +66,25 @@ public class StudentDaoImpl implements StudentDao, CloseConnectionInterface {
     }
 
     @Override
-    public boolean updateStudent(int studentId, Student newStudent) {
-        return false;
+    public boolean updateStudent(int studentId, Student student) {
+        Connection conn = DBUtil.getConnection();
+        PreparedStatement statement = null;
+        try{
+            statement = conn.prepareStatement(SQLConstantQueries.UPDATE_STUDENT);
+            statement.setString(1, student.getName());
+            statement.setString(2, student.getEmail());
+            statement.setString(3, student.getGender());
+            statement.setDouble(4, student.getScholarshipAmount());
+            statement.setInt(5, studentId);
+            int row = statement.executeUpdate();
+            return row == 1;
+
+        }catch (SQLException e){
+            logger.error(e.getMessage());
+            return false;
+        }finally {
+            closeConnection(statement, conn);
+        }
     }
 
     @Override
@@ -124,10 +148,23 @@ public class StudentDaoImpl implements StudentDao, CloseConnectionInterface {
             statement.setInt(1, studentId);
             int row = statement.executeUpdate();
             return row == 1;
-
         }catch (SQLException e){
             logger.error(e.getMessage());
             return false;
+        }finally {
+            closeConnection(statement, conn);
+        }
+    }
+
+    public void deleteStudentRegistration(int studentId){
+        Connection conn = DBUtil.getConnection();
+        PreparedStatement statement = null;
+        try{
+            statement = conn.prepareStatement(SQLConstantQueries.DELETE_STUDENT_REGISTRATION);
+            statement.setInt(1, studentId);
+            statement.executeUpdate();
+        }catch (SQLException e){
+            logger.error(e.getMessage());
         }finally {
             closeConnection(statement, conn);
         }

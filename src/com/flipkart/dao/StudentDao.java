@@ -9,4 +9,7 @@ public interface StudentDao {
     boolean deleteStudent(int studentId);
     boolean updateStudent(int studentId, Student newStudent);
     List<Student> viewAllStudents();
+    void deleteStudentRegistration(int studentId);
+    boolean deleteRegisteredCourses(int studentId);
+    boolean updateCountsOfCourses(int studentId);
 }

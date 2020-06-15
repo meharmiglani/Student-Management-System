@@ -25,7 +25,7 @@ public class UserOperation implements UserInterface{
         }
     }
 
-    public String getRole(String username, String password){
+    public int getRole(String username, String password){
         return userDao.getRole(username, password);
     }
 }

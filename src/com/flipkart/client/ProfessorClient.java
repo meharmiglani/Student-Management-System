@@ -39,7 +39,7 @@ public class ProfessorClient {
                     break;
             }
 
-            if(choice == 7){
+            if(choice > 6){
                 break;
             }
         }

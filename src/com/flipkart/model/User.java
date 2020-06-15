@@ -6,26 +6,26 @@ public class User {
     private String password;
     private String name;
     private String email;
-    private String role;
+    private int roleId;
 
     public User(){
 
     }
 
-    public User(int id, String username, String password, String name, String email, String role) {
+    public User(int id, String username, String password, String name, String email, int role) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.name = name;
         this.email = email;
-        this.role = role;
+        this.roleId = role;
     }
 
-    public User(int id, String username, String password, String role){
+    public User(int id, String username, String password, int role){
         this.id = id;
         this.username = username;
         this.password = password;
-        this.role = role;
+        this.roleId = role;
     }
 
     public User(String username, int id, String name, String email) {
@@ -67,8 +67,8 @@ public class User {
         this.email = email;
     }
 
-    public String getRole() {
-        return role;
+    public int getRoleId() {
+        return roleId;
     }
 
     public int getId() {
@@ -79,7 +79,7 @@ public class User {
         this.id = id;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
     }
 }

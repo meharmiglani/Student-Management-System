@@ -62,16 +62,61 @@ public class PayFeeDaoImpl implements PayFeeDao, CloseConnectionInterface {
         }
     }
 
-    @Override
-    public boolean makePayment(int studentId, String mode, double amount) {
+//    @Override
+//    public boolean makePayment(int studentId, String mode, double amount) {
+//        Connection conn = DBUtil.getConnection();
+//        PreparedStatement statement = null;
+//        try{
+//            statement = conn.prepareStatement(SQLConstantQueries.INSERT_PAYMENT);
+//            statement.setNull(1, Types.NULL);
+//            statement.setInt(2, studentId);
+//            statement.setString(3, mode);
+//
+//            int row = statement.executeUpdate();
+//
+//            //Get payment ID
+//            int paymentId = getPaymentId(studentId);
+//
+//            //Insert into Registration Table
+//            return insertIntoRegistration(paymentId, amount) && row == 1;
+//
+//        }catch (SQLException e){
+//            logger.error(e.getMessage());
+//            return false;
+//        }finally {
+//            closeConnection(statement, conn);
+//        }
+//    }
+
+//    public int getPaymentId(int studentId){
+//        Connection conn = DBUtil.getConnection();
+//        PreparedStatement statement = null;
+//        try{
+//            statement = conn.prepareStatement(SQLConstantQueries.GET_PAYMENT_ID);
+//            statement.setInt(1, studentId);
+//            ResultSet resultSet = statement.executeQuery();
+//            if(resultSet.next()){
+//                return resultSet.getInt(1);
+//            }
+//            return -1;
+//        }catch (SQLException e){
+//            logger.error(e.getMessage());
+//            return -1;
+//        }finally {
+//            closeConnection(statement, conn);
+//        }
+//    }
+
+    public boolean insertIntoRegistration(int studentId, int paymentId, double amount){
         Connection conn = DBUtil.getConnection();
         PreparedStatement statement = null;
         try{
-            statement = conn.prepareStatement(SQLConstantQueries.INSERT_PAYMENT);
-            statement.setInt(1, studentId);
-            statement.setString(2, mode);
-            statement.setTimestamp(3, java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()));
-            statement.setDouble(4, amount);
+            statement = conn.prepareStatement(SQLConstantQueries.INSERT_STUDENT_REGISTRATION);
+            statement.setNull(1, Types.NULL);
+            statement.setInt(2, paymentId);
+            statement.setInt(3, studentId);
+            statement.setTimestamp(4, java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()));
+            statement.setDouble(5, amount);
             int row = statement.executeUpdate();
             return row == 1;
 

@@ -23,24 +23,32 @@ public class UserClient {
         String password = scn.nextLine();
 
         int userId = -1;
-        String role = "";
+        String roleType = "";
+        int role;
         try{
             userId = checkIdentity(username, password);
             role = checkRole(username, password);
+            if(role == 1){
+                roleType = "admin";
+            }else if(role == 2){
+                roleType = "professor";
+            }else{
+                roleType = "student";
+            }
         }catch (UserNotFoundException e){
             logger.error(e.getUser());
         }
 
         if(userId != -1){
             logger.info("******** Welcome to Student Management System *********");
-            logger.info("***************** " + role.toUpperCase() + " SECTION ***************");
+            logger.info("***************** " + roleType.toUpperCase() + " SECTION ***************");
             logger.info("You have successfully logged in as " + username + " on " + localDate + " " + localTime.getHour() + ":" + localTime.getMinute() + " " + localDate.getDayOfWeek());
         }else{
             logger.error("Login Failed");
             return;
         }
 
-        switch(role){
+        switch(roleType){
             case "student":
                 StudentClient.studentHandler(userId);
                 break;
@@ -57,7 +65,7 @@ public class UserClient {
         return userOperation.checkIdentity(username, password);
     }
 
-    public static String checkRole(String username, String password){
+    public static int checkRole(String username, String password){
         return userOperation.getRole(username, password);
     }
 }

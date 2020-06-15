@@ -69,10 +69,12 @@ public class RegisterStudentDaoImpl implements RegisterStudentDao, CloseConnecti
 
             while(resultSet.next()){
                 Registration registration = new Registration();
-                registration.setStudentId(resultSet.getInt(1));
-                registration.setMode(resultSet.getString(2));
-                registration.setDate(resultSet.getObject(3, LocalDate.class));
-                registration.setAmount(resultSet.getDouble(4));
+                registration.setStudentName(resultSet.getString(1));
+                registration.setStudentId(resultSet.getInt(2));
+                registration.setRegistrationId(resultSet.getInt(3));
+                registration.setMode(resultSet.getString(4));
+                registration.setDate(resultSet.getObject(5, LocalDate.class));
+                registration.setAmount(resultSet.getDouble(6));
                 registrationList.add(registration);
             }
             return registrationList;

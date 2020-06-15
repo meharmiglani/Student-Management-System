@@ -87,4 +87,12 @@ public class Course {
     public void setFee(double fee) {
         this.fee = fee;
     }
+
+    public void setProfessorId(int professorId) {
+        this.professorId = professorId;
+    }
+
+    public void setCountOfStudents(int countOfStudents) {
+        this.countOfStudents = countOfStudents;
+    }
 }

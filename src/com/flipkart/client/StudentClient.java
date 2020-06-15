@@ -45,7 +45,7 @@ public class StudentClient {
                         default:
                             break;
                     }
-                    if(choice == 8){
+                    if(choice > 7){
                         logger.info("Logging Out....");
                         break;
                     }

@@ -62,25 +62,15 @@ public class AdminServiceOperation implements AdminServiceInterface{
 
     public void viewAllProfessors(){
         List<Professor> professorList = professorDao.viewAllProfessors();
-        logger.info(String.format("%15s %15s %15s %20s", "Professor ID", "Username", "Name", "Email ID"));
-        professorList.forEach(professor -> logger.info(String.format("%15s%15s%15s%20s", professor.getId(), professor.getUsername(), professor.getName(), professor.getEmail())));
+        logger.info(String.format("%15s %15s %15s %25s", "Professor ID", "Username", "Name", "Email ID"));
+        professorList.forEach(professor -> logger.info(String.format("%15s %15s %15s %25s", professor.getId(), professor.getUsername(), professor.getName(), professor.getEmail())));
     }
 
     public void viewPaymentDetails(){
         List<Registration> paymentList = registerStudentDao.getRegisteredStudents();
         System.out.println(paymentList.size());
-        List<Registration> newPaymentList = paymentList.stream().filter(payment -> {
-            if(payment.getMode().equals("1")){
-                payment.setMode("Cash");
-            }else if(payment.getMode().equals("2")){
-                payment.setMode("Card");
-            }else{
-                payment.setMode("Wallet");
-            }
-            return true;
-        }).collect(Collectors.toList());
-        logger.info(String.format("%15s %15s %15s %20s", "Student ID", "Amount", "Mode", "Date"));
-        newPaymentList.forEach(payment -> logger.info(String.format("%15s %15s %15s %20s", payment.getStudentId(), payment.getAmount(), payment.getMode(), payment.getDate())));
+        logger.info(String.format("%15s %15s %20s %15s %15s %15s", "Student Name", "Student ID", "Registration ID", "Mode", "Date", "Amount"));
+        paymentList.forEach(payment -> logger.info(String.format("%15s %15s %20s %15s %15s %15s", payment.getStudentName(), payment.getStudentId(), payment.getRegistrationId(), payment.getMode(), payment.getDate(), payment.getAmount())));
     }
 
     public void deleteCourse(int courseId){
@@ -92,16 +82,19 @@ public class AdminServiceOperation implements AdminServiceInterface{
     }
 
     public void deleteUser(int userId){
-        String role = userDao.getRoleById(userId);
+        int role = userDao.getRoleById(userId);
         switch(role){
-            case "student":
+            case 3:
                 deleteStudent(userId);
                 break;
-            case "professor":
+            case 2:
                 deleteProfessor(userId);
                 break;
-            case "admin":
+            case 1:
                 deleteAdmin(userId);
+                break;
+            default:
+                logger.error("Enter a valid userId");
                 break;
         }
     }
@@ -130,5 +123,50 @@ public class AdminServiceOperation implements AdminServiceInterface{
         if(!userDao.deleteUser(userId)){
             logger.error("Could not delete user " + userId);
         }
+    }
+
+    public void editUser(int userId, User user){
+        if(!userDao.editUser(userId, user)){
+            logger.error("Enter a valid user ID");
+        }
+    }
+
+    public void editStudent(int userId, Student student){
+        if(studentDao.updateStudent(userId, student)){
+            logger.info("Student " + userId + " updated successfully");
+        }else{
+            logger.error("Could not update student " + userId);
+        }
+    }
+
+    public void editProfessor(int userId, Professor professor){
+        if(professorDao.updateProfessor(userId, professor)){
+            logger.info("Professor " + userId + " updated successfully");
+        }else{
+            logger.error("Could not update professor " + userId);
+        }
+    }
+
+    public void editAdmin(int userId, Admin admin){
+
+    }
+
+    public int getRole(int userId){
+        if(userDao.getRoleById(userId) != -1){
+            return userDao.getRoleById(userId);
+        }
+        return -1;
+    }
+
+    public void viewAllCourses(){
+        List<Course> courseList = courseCatalogDao.viewAllCourses();
+        logger.info(String.format("%15s %20s %25s %20s %20s %20s", "COURSE ID", "NAME", "PROFESSOR ID", "COUNT OF STUDENTS", "CREDITS", "FEE"));
+        courseList.forEach(course -> {
+            String professorId = Integer.toString(course.getProfessorId());
+            if(professorId.equals("0")){
+                professorId = "Professor not allotted";
+            }
+            logger.info(String.format("%15s %20s %25s %20s %20s %20s", course.getCourseId(), course.getCourseName(), professorId, course.getCountOfStudents(), course.getCredits(), course.getFee()));
+        });
     }
 }

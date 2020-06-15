@@ -27,12 +27,12 @@ public class StudentServiceOperation implements StudentServiceInterface, CourseL
     //View catalog
     public void viewCourseCatalog(){
         List<Course> list = courseCatalogDao.viewCourseCatalog();
-        logger.info("************** COURSE CATALOG *******************");
-        logger.info(String.format("%15s %15s %15s", "COURSE ID", "CREDITS","COURSE NAME"));
+        logger.info("******************* COURSE CATALOG ************************");
+        logger.info(String.format("%15s %15s %20s", "COURSE ID", "CREDITS","COURSE NAME"));
         list.forEach(course -> {
-            logger.info(String.format("%15s %15s %15s", course.getCourseId(), course.getCredits(), course.getCourseName()));
+            logger.info(String.format("%15s %15s %20s", course.getCourseId(), course.getCredits(), course.getCourseName()));
         });
-        logger.info("*************************************************");
+        logger.info("************************************************************");
     }
 
     // AddCourse
@@ -59,10 +59,10 @@ public class StudentServiceOperation implements StudentServiceInterface, CourseL
     public void viewRegisteredCourses(int studentId) {
         List<Course> list = viewRegisteredCoursesDao.viewRegisteredCourses(studentId);
         if(list != null){
-            logger.info("*********** List of Registered Courses ************");
-            logger.info(String.format("%15s %15s", "Course ID", "Course Name"));
-            list.forEach(course -> logger.info(String.format("%15s %15s", course.getCourseId(), course.getCourseName())));
-            logger.info("***************************************************");
+            logger.info("*************** List of Registered Courses *****************");
+            logger.info(String.format("%20s %20s", "COURSE ID", "COURSE NAME"));
+            list.forEach(course -> logger.info(String.format("%20s %20s", course.getCourseId(), course.getCourseName())));
+            logger.info("************************************************************");
         }
     }
 
@@ -94,13 +94,13 @@ public class StudentServiceOperation implements StudentServiceInterface, CourseL
 
     public boolean displayMarks(List<Grade> gradeList){
         if(gradeList != null){
-            logger.info(String.format("%15s %15s %20s", "Course ID", "Course Name", "Marks"));
+            logger.info(String.format("%20s %20s %20s", "COURSE ID", "COURSE NAME", "MARKS"));
             gradeList.forEach(grade -> {
                 String marks = Integer.toString(grade.getMarks());
                 if(marks.equals("-1")){
                     marks = "Course not graded.";
                 }
-                logger.info(String.format("%15s %15s %20s", grade.getCourseId(), grade.getCourseName(), marks));
+                logger.info(String.format("%20s %20s %20s", grade.getCourseId(), grade.getCourseName(), marks));
             });
             return true;
         }
@@ -123,10 +123,10 @@ public class StudentServiceOperation implements StudentServiceInterface, CourseL
         logger.info("Please pay the fee in order to confirm your registration. Below is a summary of your chosen courses");
         List<Payment> feeList = payFeeDao.fetchCourseFee(studentId);
         double fee = 0;
-        logger.info(String.format("%15s %15s %15s", "Course ID", "Course Name", "Fee"));
+        logger.info(String.format("%20s %20s %20s", "COURSE ID", "COURSE NAME", "FEE"));
         for(Payment payment: feeList){
             fee += payment.getFee();
-            logger.info(String.format("%15s %15s %15s", payment.getCourseId(), payment.getCourseName(), payment.getFee()));
+            logger.info(String.format("%20s %20s %20s", payment.getCourseId(), payment.getCourseName(), payment.getFee()));
         }
         logger.info("Fee payable: " + fee);
 
@@ -139,18 +139,25 @@ public class StudentServiceOperation implements StudentServiceInterface, CourseL
         logger.info("Scholarship Amount for student " + studentId + " = " + scholarshipAmount + "%");
         logger.info("Fee after scholarship: " + fee);
         logger.info("Press Y to pay fee and N to cancel registration.");
-        String ans = scn.next();
+        String ans = scn.nextLine();
 
         if(ans.equalsIgnoreCase("N")){
             logger.info("Registration cancelled");
             return;
         }
+
+        int paymentId = 1;
         logger.info("Enter mode: 1 - Card\n2 - Cash\n3 - Wallet");
-        String mode = scn.next();
+        try{
+            paymentId = Integer.parseInt(scn.nextLine());
+        }catch (NumberFormatException e){
+            logger.error(e.getMessage());
+            return;
+        }
 
         logger.info("Total fee paid: " + fee + "on " + localDate + " " + localTime.getHour() + ":" + localTime.getMinute() + " " + localDate.getDayOfWeek());
 
-        if(payFeeDao.makePayment(studentId, mode, fee)){
+        if(payFeeDao.insertIntoRegistration(studentId, paymentId, fee)){
             registerStudentDao.registerStudent(studentId);
         }
     }

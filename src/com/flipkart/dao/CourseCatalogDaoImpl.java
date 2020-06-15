@@ -96,4 +96,33 @@ public class CourseCatalogDaoImpl implements CourseCatalogDao, CloseConnectionIn
             closeConnection(statement2, conn);
         }
     }
+
+    @Override
+    public List<Course> viewAllCourses() {
+        Connection conn = DBUtil.getConnection();
+        PreparedStatement statement = null;
+        List<Course> courseList = new ArrayList<>();
+        try{
+            statement = conn.prepareStatement(SQLConstantQueries.VIEW_ALL_COURSES);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()){
+                Course course = new Course();
+                course.setCourseId(resultSet.getInt(1));
+                course.setCourseName(resultSet.getString(2));
+                course.setProfessorId(resultSet.getInt(3));
+                course.setCountOfStudents(resultSet.getInt(4));
+                course.setCredits(resultSet.getInt(5));
+                course.setFee(resultSet.getDouble(6));
+                courseList.add(course);
+            }
+            return courseList;
+
+        }catch (SQLException e){
+            logger.error(e.getMessage());
+            return null;
+        }finally {
+            closeConnection(statement, conn);
+        }
+    }
 }

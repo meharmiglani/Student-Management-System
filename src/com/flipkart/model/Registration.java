@@ -3,6 +3,8 @@ package com.flipkart.model;
 import java.time.LocalDate;
 
 public class Registration {
+    String studentName;
+    int registrationId;
     int studentId;
     double amount;
     String mode;
@@ -38,5 +40,21 @@ public class Registration {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public int getRegistrationId() {
+        return registrationId;
+    }
+
+    public void setRegistrationId(int registrationId) {
+        this.registrationId = registrationId;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
     }
 }
