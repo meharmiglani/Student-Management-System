@@ -1,11 +1,5 @@
 package com.flipkart.dao;
 
-import com.flipkart.constant.SQLConstantQueries;
-import com.flipkart.model.Professor;
-import com.flipkart.utils.CloseConnectionInterface;
-import com.flipkart.utils.DBUtil;
-import org.apache.log4j.Logger;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,9 +7,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
+import com.flipkart.constant.SQLConstantQueries;
+import com.flipkart.model.Professor;
+import com.flipkart.utils.CloseConnectionInterface;
+import com.flipkart.utils.DBUtil;
+
+//Performs all CRUD operations on a professor
 public class ProfessorDaoImpl implements ProfessorDao, CloseConnectionInterface{
     private final static Logger logger = Logger.getLogger(ProfessorDaoImpl.class);
 
+    //Creates a new professor
     @Override
     public boolean insertProfessor(Professor professor){
         Connection conn = DBUtil.getConnection();
@@ -37,6 +40,7 @@ public class ProfessorDaoImpl implements ProfessorDao, CloseConnectionInterface{
         }
     }
 
+    ////Deletes a professor from the DB (Has a cascading effect with the user table as well)
     @Override
     public boolean deleteProfessor(int professorId) {
         Connection conn = DBUtil.getConnection();
@@ -47,18 +51,18 @@ public class ProfessorDaoImpl implements ProfessorDao, CloseConnectionInterface{
         try{
             statement = conn.prepareStatement(SQLConstantQueries.DELETE_PROFESSOR_PROFESSOR_TABLE);
             statement.setInt(1, professorId);
-            int row2 = statement.executeUpdate();
+            int row = statement.executeUpdate();
 
             statement1 = conn.prepareStatement(SQLConstantQueries.DELETE_PROFESSOR_COURSE_TABLE);
             statement1.setInt(1, professorId);
-            int row3 = statement1.executeUpdate();
+            statement1.executeUpdate();
 
             statement2 = conn.prepareStatement(SQLConstantQueries.UPDATE_COURSE_TABLE);
             statement2.setInt(1, 0);
             statement2.setInt(2, professorId);
-            int row4 = statement2.executeUpdate();
+            statement2.executeUpdate();
 
-            return row2 == 1 && row3 == 1 && row4 == 1;
+            return row == 1;
 
         }catch (SQLException e) {
             logger.error(e.getMessage());
@@ -70,6 +74,7 @@ public class ProfessorDaoImpl implements ProfessorDao, CloseConnectionInterface{
         }
     }
 
+    //Updates the details of a particular professor
     @Override
     public boolean updateProfessor(int professorId, Professor newProfessor) {
         Connection conn = DBUtil.getConnection();
@@ -90,6 +95,7 @@ public class ProfessorDaoImpl implements ProfessorDao, CloseConnectionInterface{
         }
     }
 
+    //List the details of all existing professors in the university
     @Override
     public List<Professor> viewAllProfessors() {
         Connection conn = DBUtil.getConnection();

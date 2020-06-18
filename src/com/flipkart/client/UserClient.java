@@ -1,12 +1,13 @@
 package com.flipkart.client;
 
-import com.flipkart.exception.UserNotFoundException;
-import com.flipkart.service.*;
-import org.apache.log4j.Logger;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Scanner;
+
+import org.apache.log4j.Logger;
+
+import com.flipkart.exception.UserNotFoundException;
+import com.flipkart.service.UserOperation;
 
 public class UserClient {
     static Scanner scn = new Scanner(System.in);
@@ -17,7 +18,7 @@ public class UserClient {
     private final static LocalTime localTime = LocalTime.now();
 
     public static void main(String[] args){
-        logger.info("Enter your username");
+        logger.info("Enter your username"); //Log in system - asks for the username and password
         String username = scn.nextLine();
         logger.info("Enter your password");
         String password = scn.nextLine();
@@ -26,8 +27,8 @@ public class UserClient {
         String roleType = "";
         int role;
         try{
-            userId = checkIdentity(username, password);
-            role = checkRole(username, password);
+            userId = checkIdentity(username, password); //Checks the identity of the user for logging in
+            role = checkRole(username, password);  //Fetches the role
             if(role == 1){
                 roleType = "admin";
             }else if(role == 2){
@@ -35,20 +36,21 @@ public class UserClient {
             }else{
                 roleType = "student";
             }
-        }catch (UserNotFoundException e){
+        }catch (UserNotFoundException e){ 
             logger.error(e.getUser());
         }
-
+        
+        //Authorization passed
         if(userId != -1){
             logger.info("******** Welcome to Student Management System *********");
             logger.info("***************** " + roleType.toUpperCase() + " SECTION ***************");
             logger.info("You have successfully logged in as " + username + " on " + localDate + " " + localTime.getHour() + ":" + localTime.getMinute() + " " + localDate.getDayOfWeek());
         }else{
-            logger.error("Login Failed");
+            logger.error("Login Failed"); //Authorization failed
             return;
         }
 
-        switch(roleType){
+        switch(roleType){ //Goes to corresponding clients depending upon role
             case "student":
                 StudentClient.studentHandler(userId);
                 break;

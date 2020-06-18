@@ -1,21 +1,31 @@
 package com.flipkart.dao;
 
-import com.flipkart.constant.SQLConstantQueries;
-import com.flipkart.utils.CloseConnectionInterface;
-import com.flipkart.utils.DBUtil;
-import org.apache.log4j.Logger;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.log4j.Logger;
+
+import com.flipkart.constant.SQLConstantQueries;
+import com.flipkart.exception.CourseLimitExceededException;
+import com.flipkart.utils.CloseConnectionInterface;
+import com.flipkart.utils.DBUtil;
+
+//Performs all operations when a student adds/deletes a course for registration
 public class RegisterCourseDaoImpl implements RegisterCourseDao, CloseConnectionInterface {
     private final static Logger logger = Logger.getLogger(RegisterCourseDaoImpl.class);
 
 
+    /* Adds a course in student's registration after performing various checks as follows
+     * 1. Checks for course existence
+     * 2. Checks if the student has already submitted his final registration
+     * 3. The student limit for the course isn't exhausted
+     * 4. The course limit for the student isn't exhausted (Maximum 4)
+     */
+    
     @Override
-    public boolean addCourse(int studentId, String studentName, int courseId) {
+    public boolean addCourse(int studentId, String studentName, int courseId) throws CourseLimitExceededException{
         Connection conn = DBUtil.getConnection();
         PreparedStatement statement = null;
         PreparedStatement statement1 = null;
@@ -26,7 +36,7 @@ public class RegisterCourseDaoImpl implements RegisterCourseDao, CloseConnection
         }
 
         try{
-            statement1 = conn.prepareStatement(SQLConstantQueries.CHECK_COURSE_EXISTENCE);
+            statement1 = conn.prepareStatement(SQLConstantQueries.CHECK_COURSE_EXISTENCE); //Checks for course existence
             statement1.setInt(1,courseId);
             ResultSet resultSet = statement1.executeQuery();
 
@@ -51,10 +61,9 @@ public class RegisterCourseDaoImpl implements RegisterCourseDao, CloseConnection
                 logger.error("SQL Error");
                 return false;
             }else{
-                //Throw Exception
-                logger.error("Course Limit Exceeded");
-                return false;
+                throw new CourseLimitExceededException(courseName);
             }
+            
         }catch(SQLException e){
             logger.error(e.getMessage());
             return false;
@@ -64,6 +73,11 @@ public class RegisterCourseDaoImpl implements RegisterCourseDao, CloseConnection
         }
     }
 
+    /*Deletes a course from student's selection after the following checks
+     * 1. Student must not have submitted his final registration
+     * 2. Student must be enrolled first to delete it
+     * 3. Course must exist in the university
+     */
     @Override
     public boolean deleteCourse(int studentId, int courseId) {
         Connection conn = DBUtil.getConnection();
@@ -95,7 +109,9 @@ public class RegisterCourseDaoImpl implements RegisterCourseDao, CloseConnection
             closeConnection(statement3, conn);
         }
     }
-
+    
+    //Check before "adding" a course to verify how many courses is the student currently enrolled in
+    @Override
     public int courseLimitCheck(int studentId){
         Connection conn = DBUtil.getConnection();
         PreparedStatement statement = null;
@@ -118,6 +134,8 @@ public class RegisterCourseDaoImpl implements RegisterCourseDao, CloseConnection
         }
     }
 
+    //Check to see if a student is already enrolled in the course or not
+    @Override
     public boolean alreadyAddedCourse(int studentId, int courseId){
         Connection conn = DBUtil.getConnection();
         PreparedStatement statement = null;
@@ -134,6 +152,8 @@ public class RegisterCourseDaoImpl implements RegisterCourseDao, CloseConnection
         }
     }
 
+    //Fetches count of students in a particular course
+    @Override
     public int getCountOfStudents(int courseId){
         Connection conn = DBUtil.getConnection();
         PreparedStatement statement = null;
@@ -153,6 +173,7 @@ public class RegisterCourseDaoImpl implements RegisterCourseDao, CloseConnection
         }
     }
 
+    //Updates the count of students in a course in case of a new addition/deletion
     @Override
     public boolean updateStudentCount(int courseId, int count, int mode) {
         Connection conn = DBUtil.getConnection();

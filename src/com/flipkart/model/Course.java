@@ -8,6 +8,8 @@ public class Course {
     private int credits;
     private int countOfStudents;
     private double fee;
+    private int catalogId;
+    private String catalogType;
 
     public Course(){
 
@@ -94,5 +96,21 @@ public class Course {
 
     public void setCountOfStudents(int countOfStudents) {
         this.countOfStudents = countOfStudents;
+    }
+
+    public int getCatalogId() {
+        return catalogId;
+    }
+
+    public void setCatalogId(int catalogId) {
+        this.catalogId = catalogId;
+    }
+
+    public String getCatalogType() {
+        return catalogType;
+    }
+
+    public void setCatalogType(String catalogType) {
+        this.catalogType = catalogType;
     }
 }

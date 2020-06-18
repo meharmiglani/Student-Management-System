@@ -1,13 +1,16 @@
 package com.flipkart.dao;
 
-import com.flipkart.constant.SQLConstantQueries;
-import com.flipkart.utils.CloseConnectionInterface;
-import com.flipkart.utils.DBUtil;
-import org.apache.log4j.Logger;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
+import org.apache.log4j.Logger;
+
+import com.flipkart.constant.SQLConstantQueries;
+import com.flipkart.utils.CloseConnectionInterface;
+import com.flipkart.utils.DBUtil;
+
+//Implements marks update operation by a professor for a particular student and course
 
 public class UpdateMarksDaoImpl implements UpdateMarksDao, CloseConnectionInterface {
     private final static Logger logger = Logger.getLogger(UpdateMarksDaoImpl.class);

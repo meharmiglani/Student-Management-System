@@ -1,19 +1,22 @@
 package com.flipkart.dao;
 
-import com.flipkart.constant.SQLConstantQueries;
-import com.flipkart.model.User;
-import com.flipkart.utils.CloseConnectionInterface;
-import com.flipkart.utils.DBUtil;
-import org.apache.log4j.Logger;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.log4j.Logger;
+
+import com.flipkart.constant.SQLConstantQueries;
+import com.flipkart.model.User;
+import com.flipkart.utils.CloseConnectionInterface;
+import com.flipkart.utils.DBUtil;
+
+//Performs all user specific operations (Checking identity, fetching role, CRUD)
 public class UserDaoImpl implements UserDao, CloseConnectionInterface {
     private final static Logger logger = Logger.getLogger(UserDaoImpl.class);
 
+    //Checks for authentication whie logging in
     @Override
     public int checkIdentity(String username, String password) {
         Connection conn = DBUtil.getConnection();
@@ -37,6 +40,7 @@ public class UserDaoImpl implements UserDao, CloseConnectionInterface {
         }
     }
 
+    //Fetches a student's name based on his id
     @Override
     public String getStudentName(int studentId) {
         Connection conn = DBUtil.getConnection();
@@ -62,6 +66,7 @@ public class UserDaoImpl implements UserDao, CloseConnectionInterface {
         }
     }
 
+    //Fetches role of a user by his username and password
     @Override
     public int getRole(String username, String password) {
         Connection conn = DBUtil.getConnection();
@@ -86,6 +91,7 @@ public class UserDaoImpl implements UserDao, CloseConnectionInterface {
         }
     }
 
+    //Creates a new user in the DB
     @Override
     public boolean createUser(User user) {
         Connection conn = DBUtil.getConnection();
@@ -109,6 +115,7 @@ public class UserDaoImpl implements UserDao, CloseConnectionInterface {
         }
     }
 
+    //Fetches role of a user by his id
     @Override
     public int getRoleById(int userId) {
         Connection conn = DBUtil.getConnection();
@@ -131,6 +138,7 @@ public class UserDaoImpl implements UserDao, CloseConnectionInterface {
         }
     }
 
+    //Deletes a user from the DB
     @Override
     public boolean deleteUser(int userId) {
         Connection conn = DBUtil.getConnection();
@@ -150,6 +158,7 @@ public class UserDaoImpl implements UserDao, CloseConnectionInterface {
         }
     }
 
+    //Edits the details of the user in the DB
     @Override
     public boolean editUser(int userId, User user) {
         Connection conn = DBUtil.getConnection();

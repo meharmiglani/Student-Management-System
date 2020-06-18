@@ -1,8 +1,8 @@
 package com.flipkart.dao;
 
-import com.flipkart.model.Registration;
-
 import java.util.List;
+
+import com.flipkart.model.Registration;
 
 public interface RegisterStudentDao {
     boolean registerStudent(int studentId);

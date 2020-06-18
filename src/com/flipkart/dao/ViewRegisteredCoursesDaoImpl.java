@@ -1,11 +1,5 @@
 package com.flipkart.dao;
 
-import com.flipkart.constant.SQLConstantQueries;
-import com.flipkart.utils.CloseConnectionInterface;
-import com.flipkart.model.Course;
-import com.flipkart.utils.DBUtil;
-import org.apache.log4j.Logger;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,6 +7,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
+import com.flipkart.constant.SQLConstantQueries;
+import com.flipkart.model.Course;
+import com.flipkart.utils.CloseConnectionInterface;
+import com.flipkart.utils.DBUtil;
+
+//Fetches a list of currently added courses by the student
 public class ViewRegisteredCoursesDaoImpl implements ViewRegisteredCoursesDao, CloseConnectionInterface {
     private final static Logger logger = Logger.getLogger(ViewRegisteredCoursesDaoImpl.class);
     @Override

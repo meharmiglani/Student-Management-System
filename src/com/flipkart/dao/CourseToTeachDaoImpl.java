@@ -1,11 +1,5 @@
 package com.flipkart.dao;
 
-import com.flipkart.constant.SQLConstantQueries;
-import com.flipkart.utils.CloseConnectionInterface;
-import com.flipkart.model.Course;
-import com.flipkart.utils.DBUtil;
-import org.apache.log4j.Logger;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,9 +7,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
+import com.flipkart.constant.SQLConstantQueries;
+import com.flipkart.model.Course;
+import com.flipkart.utils.CloseConnectionInterface;
+import com.flipkart.utils.DBUtil;
+
+//Performs all professor operations on courses
 public class CourseToTeachDaoImpl implements CourseToTeachDao, CloseConnectionInterface {
     private static Logger logger = Logger.getLogger(CourseToTeachDaoImpl.class);
 
+    //Professor can select a course to teach
     @Override
     public boolean selectCourse(int professorId, int courseId){
         Connection conn = DBUtil.getConnection();
@@ -44,6 +47,8 @@ public class CourseToTeachDaoImpl implements CourseToTeachDao, CloseConnectionIn
         }
     }
 
+    //Professor can view a list of available courses to choose which one to teach
+    @Override
     public List<Course> viewCoursesAvailableToTeach(){
         Connection conn = DBUtil.getConnection();
         PreparedStatement statement = null;
@@ -70,6 +75,7 @@ public class CourseToTeachDaoImpl implements CourseToTeachDao, CloseConnectionIn
         }
     }
 
+    //Displays a list of courses that a particular professor is already teaching
     @Override
     public List<Course> coursesTeaching(int professorId) {
         Connection conn = DBUtil.getConnection();

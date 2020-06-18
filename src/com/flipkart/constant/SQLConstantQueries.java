@@ -5,7 +5,7 @@ public class SQLConstantQueries {
     public static final String GET_ROLE = "SELECT roleId FROM User WHERE username = ? AND password = ?";
     public static final String GET_ROLE_BY_ID = "SELECT roleId FROM User WHERE userId = ?";
     public static final String GET_STUDENT_NAME = "SELECT name FROM Student WHERE studentId = ?";
-    public static final String GET_CATALOG = "SELECT courseId, name, credits FROM Course WHERE professorId > 0 ORDER BY courseId ASC";
+    public static final String GET_CATALOG = "SELECT courseId, name, credits FROM Course WHERE professorId > 0 AND catalogId = ? ORDER BY courseId ASC";
     public static final String CHECK_COURSE_EXISTENCE = "SELECT name FROM Course WHERE courseId = ?";
     public static final String COUNT_OF_STUDENTS = "SELECT countOfStudents FROM Course WHERE courseId = ?";
     public static final String UPDATE_COUNT = "UPDATE Course SET countOfStudents = ? WHERE courseId = ?";
@@ -14,10 +14,10 @@ public class SQLConstantQueries {
     public static final String UPDATE_MARKS = "UPDATE RegisterCourse SET marks = ? WHERE studentId = ? AND courseId = ?";
     public static final String CHECK_ALREADY_ADDED_COURSE = "SELECT COUNT(*) FROM RegisterCourse WHERE studentId = ? AND courseId = ?";
     public static final String DELETE_STUDENT_COURSE = "DELETE FROM RegisterCourse WHERE studentId = ? AND courseId = ?";
-    public static final String VIEW_STUDENT_LIST =  "SELECT RegisterCourse.studentName, RegisterCourse.studentId, RegisterCourse.courseName, RegisterCourse.marks " +
+    public static final String VIEW_STUDENT_LIST =  "SELECT RegisterCourse.courseId, RegisterCourse.studentName, RegisterCourse.studentId, RegisterCourse.courseName, RegisterCourse.marks " +
                                                     "FROM ProfessorByCourse INNER JOIN RegisterCourse ON ProfessorByCourse.courseId = RegisterCourse.courseId " +
                                                     "WHERE ProfessorByCourse.professorId = ?";
-    public static final String REGISTERED_COURSES = "SELECT courseId, courseName FROM RegisterCourse WHERE studentId = ?";
+    public static final String REGISTERED_COURSES = "SELECT courseId, courseName FROM RegisterCourse WHERE studentId = ? ORDER BY courseId ASC";
     public static final String VIEW_STUDENT_LIST_BY_COURSE_ID = "SELECT DISTINCT RegisterCourse.studentName, RegisterCourse.studentId, RegisterCourse.courseName, RegisterCourse.marks " +
                                                                 "FROM ProfessorByCourse INNER JOIN RegisterCourse ON ProfessorByCourse.courseId = RegisterCourse.courseId " +
                                                                 "WHERE ProfessorByCourse.professorId = ? AND RegisterCourse.courseId = ?";
@@ -27,6 +27,7 @@ public class SQLConstantQueries {
     public static final String VIEW_COURSES_TAUGHT = "SELECT courseId, name, countOfStudents FROM Course WHERE professorId = ?";
     public static final String CHECK_FOR_REPORT_CARD = "SELECT COUNT(*) FROM RegisterCourse WHERE marks > -1 AND studentId = ?";
     public static final String GET_REPORT_CARD = "SELECT courseId, courseName, marks FROM RegisterCourse WHERE studentId = ?";
+    public static final String GET_FINAL_MARKS = "SELECT AVG(marks) FROM RegisterCourse WHERE studentId = ? ";
     public static final String IS_REGISTERED = "SELECT isRegistered FROM Student WHERE studentId = ?";
     public static final String REGISTER_STUDENT = "UPDATE Student SET isRegistered = ? WHERE studentId = ?";
     public static final String FETCH_COURSE_FEE = "SELECT Course.courseId, Course.name, Course.fee FROM Course INNER JOIN RegisterCourse ON Course.courseId = RegisterCourse.courseId WHERE RegisterCourse.studentId = ?";
@@ -38,7 +39,7 @@ public class SQLConstantQueries {
     public static final String CREATE_STUDENT = "INSERT INTO Student VALUES(?,?,?,?,?,?)";
     public static final String CREATE_PROFESSOR = "INSERT INTO Professor VALUES(?,?,?)";
     public static final String CREATE_ADMIN = "INSERT INTO Admin VALUES(?,?,?)";
-    public static final String CREATE_COURSE = "INSERT INTO Course VALUES(?,?,?,?,?,?)";
+    public static final String CREATE_COURSE = "INSERT INTO Course VALUES(?,?,?,?,?,?,?)";
     public static final String DELETE_COURSE = "DELETE FROM Course WHERE courseId = ?";
     public static final String DELETE_REGISTER_COURSE = "DELETE FROM RegisterCourse WHERE courseId = ?";
     public static final String DELETE_PROFESSOR_COURSE = "DELETE FROM ProfessorByCourse WHERE courseId = ?";
@@ -52,11 +53,10 @@ public class SQLConstantQueries {
     public static final String UPDATE_COURSE_TABLE = "UPDATE Course SET professorId = ? WHERE professorId = ?";
     public static final String DELETE_STUDENT_TABLE = "DELETE FROM Student WHERE studentId = ?";
     public static final String DELETE_STUDENT_REGISTRATION = "DELETE FROM StudentRegistration WHERE studentId = ?";
-    public static final String GET_REGISTERED_COURSE_BY_ID = "SELECT courseId FROM RegisterCourse WHERE studentId = ?";
+    public static final String GET_REGISTERED_COURSE_BY_ID = "SELECT courseId FROM RegisterCourse WHERE studentId = ? ORDER BY courseId ASC";
     public static final String DELETE_REGISTERED_COURSES = "DELETE FROM RegisterCourse WHERE studentId = ?";
     public static final String EDIT_USER = "UPDATE User SET username = ?, password = ? WHERE userId = ?";
     public static final String UPDATE_STUDENT = "UPDATE Student SET name = ?, email = ?, gender = ?, scholarship = ? WHERE studentId = ?";
     public static final String UPDATE_PROFESSOR = "UPDATE Professor SET name = ?, email = ? WHERE professorId = ?";
-    public static final String VIEW_ALL_COURSES = "SELECT * FROM Course";
-
+    public static final String VIEW_ALL_COURSES = "SELECT courseId, name, professorId, countOfStudents, credits, fee, description FROM Course INNER JOIN Catalog ON Course.catalogId = Catalog.catalogId";
 }

@@ -1,11 +1,5 @@
 package com.flipkart.dao;
 
-import com.flipkart.constant.SQLConstantQueries;
-import com.flipkart.utils.CloseConnectionInterface;
-import com.flipkart.model.Course;
-import com.flipkart.utils.DBUtil;
-import org.apache.log4j.Logger;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,16 +7,26 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
+import com.flipkart.constant.SQLConstantQueries;
+import com.flipkart.model.Course;
+import com.flipkart.utils.CloseConnectionInterface;
+import com.flipkart.utils.DBUtil;
+
+//Performs all operations on Course Catalog (CRUD)
 public class CourseCatalogDaoImpl implements CourseCatalogDao, CloseConnectionInterface {
     private final static Logger logger = Logger.getLogger(CourseCatalogDaoImpl.class);
 
+    //Fetches the courses from the DB in a given catalog 
     @Override
-    public List<Course> viewCourseCatalog() {
+    public List<Course> viewCourseCatalog(int catalogId) {
         List<Course> catalog = new ArrayList<>();
         Connection conn = DBUtil.getConnection();
         PreparedStatement statement = null;
         try{
             statement = conn.prepareStatement(SQLConstantQueries.GET_CATALOG);
+            statement.setInt(1, catalogId);
             ResultSet resultSet = statement.executeQuery();
 
             while(resultSet.next()){
@@ -42,6 +46,7 @@ public class CourseCatalogDaoImpl implements CourseCatalogDao, CloseConnectionIn
         }
     }
 
+    //Adds a course to the catalog
     @Override
     public boolean addCourseToCatalog(Course course) {
         Connection conn = DBUtil.getConnection();
@@ -54,6 +59,7 @@ public class CourseCatalogDaoImpl implements CourseCatalogDao, CloseConnectionIn
             statement.setInt(4, 0);
             statement.setInt(5, course.getCredits());
             statement.setDouble(6, course.getFee());
+            statement.setInt(7, course.getCatalogId());
             int row = statement.executeUpdate();
 
             return row == 1;
@@ -65,6 +71,7 @@ public class CourseCatalogDaoImpl implements CourseCatalogDao, CloseConnectionIn
         }
     }
 
+    //Deletes a course from the catalog
     @Override
     public boolean deleteCourse(int courseId) {
         Connection conn = DBUtil.getConnection();
@@ -97,6 +104,7 @@ public class CourseCatalogDaoImpl implements CourseCatalogDao, CloseConnectionIn
         }
     }
 
+    //Fetches a list of all available courses
     @Override
     public List<Course> viewAllCourses() {
         Connection conn = DBUtil.getConnection();
@@ -114,6 +122,7 @@ public class CourseCatalogDaoImpl implements CourseCatalogDao, CloseConnectionIn
                 course.setCountOfStudents(resultSet.getInt(4));
                 course.setCredits(resultSet.getInt(5));
                 course.setFee(resultSet.getDouble(6));
+                course.setCatalogType(resultSet.getString(7));
                 courseList.add(course);
             }
             return courseList;

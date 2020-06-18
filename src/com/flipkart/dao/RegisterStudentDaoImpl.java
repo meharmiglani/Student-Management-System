@@ -1,11 +1,5 @@
 package com.flipkart.dao;
 
-import com.flipkart.constant.SQLConstantQueries;
-import com.flipkart.model.Registration;
-import com.flipkart.utils.CloseConnectionInterface;
-import com.flipkart.utils.DBUtil;
-import org.apache.log4j.Logger;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,9 +8,21 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
+import com.flipkart.constant.SQLConstantQueries;
+import com.flipkart.model.Registration;
+import com.flipkart.utils.CloseConnectionInterface;
+import com.flipkart.utils.DBUtil;
+
+//Handles operations when a student submits his final registration to enroll in all chosen courses
 public class RegisterStudentDaoImpl implements RegisterStudentDao, CloseConnectionInterface {
     private static final Logger logger = Logger.getLogger(RegisterStudentDaoImpl.class);
 
+    /*Registers a student after performing the following checks
+     * 1. Student must not be registered before
+     * 2. Student must have chosen 4 courses
+     */
     @Override
     public boolean registerStudent(int studentId) {
         Connection conn = DBUtil.getConnection();
@@ -44,6 +50,8 @@ public class RegisterStudentDaoImpl implements RegisterStudentDao, CloseConnecti
         }
     }
 
+    //Checks if a student is already registered as he can't register again
+    @Override
     public boolean checkRegistration(int studentId){
         Connection conn = DBUtil.getConnection();
         PreparedStatement statement = null;
@@ -59,6 +67,8 @@ public class RegisterStudentDaoImpl implements RegisterStudentDao, CloseConnecti
         }
     }
 
+    //Fetches a list of all registered students and their payment details
+    @Override
     public List<Registration> getRegisteredStudents(){
         Connection conn = DBUtil.getConnection();
         PreparedStatement statement = null;

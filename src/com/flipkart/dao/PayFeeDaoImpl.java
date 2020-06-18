@@ -1,18 +1,25 @@
 package com.flipkart.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
 import com.flipkart.constant.SQLConstantQueries;
 import com.flipkart.model.Payment;
 import com.flipkart.utils.CloseConnectionInterface;
 import com.flipkart.utils.DBUtil;
-import org.apache.log4j.Logger;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-
+//Performs all operations on paying the fee by a student
 public class PayFeeDaoImpl implements PayFeeDao, CloseConnectionInterface {
     private static final Logger logger = Logger.getLogger(PayFeeDaoImpl.class);
 
+    //Displays a list of the registered courses and their corresponding fee by a student
     @Override
     public List<Payment> fetchCourseFee(int studentId) {
         List<Payment> list = new ArrayList<>();
@@ -41,6 +48,7 @@ public class PayFeeDaoImpl implements PayFeeDao, CloseConnectionInterface {
         }
     }
 
+    //Fetches the % of scholarship (if any) for a student
     @Override
     public double getScholarshipAmount(int studentId) {
         Connection conn = DBUtil.getConnection();
@@ -62,51 +70,7 @@ public class PayFeeDaoImpl implements PayFeeDao, CloseConnectionInterface {
         }
     }
 
-//    @Override
-//    public boolean makePayment(int studentId, String mode, double amount) {
-//        Connection conn = DBUtil.getConnection();
-//        PreparedStatement statement = null;
-//        try{
-//            statement = conn.prepareStatement(SQLConstantQueries.INSERT_PAYMENT);
-//            statement.setNull(1, Types.NULL);
-//            statement.setInt(2, studentId);
-//            statement.setString(3, mode);
-//
-//            int row = statement.executeUpdate();
-//
-//            //Get payment ID
-//            int paymentId = getPaymentId(studentId);
-//
-//            //Insert into Registration Table
-//            return insertIntoRegistration(paymentId, amount) && row == 1;
-//
-//        }catch (SQLException e){
-//            logger.error(e.getMessage());
-//            return false;
-//        }finally {
-//            closeConnection(statement, conn);
-//        }
-//    }
-
-//    public int getPaymentId(int studentId){
-//        Connection conn = DBUtil.getConnection();
-//        PreparedStatement statement = null;
-//        try{
-//            statement = conn.prepareStatement(SQLConstantQueries.GET_PAYMENT_ID);
-//            statement.setInt(1, studentId);
-//            ResultSet resultSet = statement.executeQuery();
-//            if(resultSet.next()){
-//                return resultSet.getInt(1);
-//            }
-//            return -1;
-//        }catch (SQLException e){
-//            logger.error(e.getMessage());
-//            return -1;
-//        }finally {
-//            closeConnection(statement, conn);
-//        }
-//    }
-
+    //Registers a student in the DB after all verifications
     public boolean insertIntoRegistration(int studentId, int paymentId, double amount){
         Connection conn = DBUtil.getConnection();
         PreparedStatement statement = null;

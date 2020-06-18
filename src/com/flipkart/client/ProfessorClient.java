@@ -9,6 +9,7 @@ public class ProfessorClient {
     private final static Scanner scn = new Scanner(System.in);
     private final static ProfessorServiceOperation professorServiceOperation = new ProfessorServiceOperation();
 
+    //Handles all professor client operations
     public static void professorHandler(int professorId){
 
         while (true){
@@ -18,33 +19,35 @@ public class ProfessorClient {
 
             switch (choice){
                 case 1:
-                    viewAllStudentList(professorId);
+                    viewAllStudentList(professorId); //Displays all students
                     break;
                 case 2:
-                    viewStudentListByCourseId(professorId);
+                    viewStudentListByCourseId(professorId); //Displays students in a course
                     break;
                 case 3:
-                    viewCoursesTaughtByProfessor(professorId);
+                    viewCoursesTaughtByProfessor(professorId); //View all courses taught by a professor
                     break;
                 case 4:
-                    viewCoursesToTeach();
+                    viewCoursesToTeach(); //Available courses
                     break;
                 case 5:
-                    selectCourses(professorId);
+                    selectCourses(professorId); //Choose a course to teach
                     break;
                 case 6:
-                    updateMarks(professorId);
+                    updateMarks(professorId); //Update marks of a student
                     break;
                 default:
                     break;
             }
 
             if(choice > 6){
+            	logger.info("Logging Out...");
                 break;
             }
         }
     }
 
+    //Displays professor menu
     public static void displayProfessorMenu(){
         logger.info("1 - View student List");
         logger.info("2 - View Student List by course ID");
@@ -54,37 +57,45 @@ public class ProfessorClient {
         logger.info("6 - Upload marks");
         logger.info("7 - Logout");
     }
-
+    
+    //View all students that a professor teaches in all courses
     public static void viewAllStudentList(int professorrId){
         professorServiceOperation.viewStudentList(professorrId);
     }
 
+    //View all students in a particular course taught by the professor
     public static void viewStudentListByCourseId(int professorId){
         logger.info("Enter the courseID");
         int courseId = Integer.parseInt(scn.nextLine());
         professorServiceOperation.viewStudentListByCourseId(professorId, courseId);
     }
 
+    //View all courses that a professor teaches
     public static void viewCoursesTaughtByProfessor(int professorId){
         professorServiceOperation.viewCoursesTaught(professorId);
     }
-
+    
+    //Displays a list of available courses in the university
     public static void viewCoursesToTeach(){
         professorServiceOperation.viewCoursesToTeach();
     }
-
+    
+    //Helps professor choose courses to teach
     public static void selectCourses(int professorId){
         logger.info("Enter the courseID you want to teach");
         int courseId = Integer.parseInt(scn.nextLine());
         professorServiceOperation.selectCourseToTeach(professorId, courseId);
     }
-
+    
+    //Update marks of a student in a particular course
     public static void updateMarks(int professorId){
         logger.info("Enter student ID");
         int studentId = Integer.parseInt(scn.nextLine());
-//        if(!professorServiceOperation.checkForRegistration(studentId)){
-//            logger.info("Student isn't registered yet");
-//        }
+        if(!professorServiceOperation.checkForRegistration(studentId)){
+            logger.info("Student isn't registered yet");
+            return;
+        }
+        
         logger.info("Enter course ID");
         int courseId = Integer.parseInt(scn.nextLine());
         logger.info("Enter marks");

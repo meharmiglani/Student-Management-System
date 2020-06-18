@@ -10,8 +10,8 @@ public interface CourseListInterface {
     Logger logger = Logger.getLogger(CourseListInterface.class);
     CourseCatalogDaoImpl courseCatalogDao = new CourseCatalogDaoImpl();
 
-    default void viewCourseListCatalog() {
-        List<Course> catalogList = courseCatalogDao.viewCourseCatalog();
+    default void viewCourseListCatalog(int catalogId) {
+        List<Course> catalogList = courseCatalogDao.viewCourseCatalog(catalogId);
         if (catalogList != null) {
             logger.info("\n");
             logger.info("********* CATALOG ************");

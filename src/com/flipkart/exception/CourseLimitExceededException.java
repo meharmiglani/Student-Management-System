@@ -8,6 +8,6 @@ public class CourseLimitExceededException extends Exception{
     }
 
     public String getCourse() {
-        return course;
+        return (course + " has reached the maximum student count");
     }
 }

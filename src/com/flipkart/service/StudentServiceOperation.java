@@ -1,16 +1,23 @@
 package com.flipkart.service;
 
-import com.flipkart.dao.*;
-import com.flipkart.model.Payment;
-import com.flipkart.utils.CourseListInterface;
-import com.flipkart.model.Course;
-import com.flipkart.model.Grade;
-import org.apache.log4j.Logger;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Scanner;
+
+import org.apache.log4j.Logger;
+
+import com.flipkart.dao.CourseCatalogDaoImpl;
+import com.flipkart.dao.FetchReportCardDaoImpl;
+import com.flipkart.dao.PayFeeDaoImpl;
+import com.flipkart.dao.RegisterCourseDaoImpl;
+import com.flipkart.dao.RegisterStudentDaoImpl;
+import com.flipkart.dao.ViewRegisteredCoursesDaoImpl;
+import com.flipkart.exception.CourseLimitExceededException;
+import com.flipkart.model.Course;
+import com.flipkart.model.Grade;
+import com.flipkart.model.Payment;
+import com.flipkart.utils.CourseListInterface;
 
 public class StudentServiceOperation implements StudentServiceInterface, CourseListInterface {
     private final static LocalDate localDate = LocalDate.now();
@@ -24,9 +31,10 @@ public class StudentServiceOperation implements StudentServiceInterface, CourseL
     private final RegisterStudentDaoImpl registerStudentDao = new RegisterStudentDaoImpl();
     private final PayFeeDaoImpl payFeeDao = new PayFeeDaoImpl();
 
-    //View catalog
-    public void viewCourseCatalog(){
-        List<Course> list = courseCatalogDao.viewCourseCatalog();
+    //View catalog of all the courses available
+    @Override
+    public void viewCourseCatalog(int catalogId){
+        List<Course> list = courseCatalogDao.viewCourseCatalog(catalogId);
         logger.info("******************* COURSE CATALOG ************************");
         logger.info(String.format("%15s %15s %20s", "COURSE ID", "CREDITS","COURSE NAME"));
         list.forEach(course -> {
@@ -35,27 +43,31 @@ public class StudentServiceOperation implements StudentServiceInterface, CourseL
         logger.info("************************************************************");
     }
 
-    // AddCourse
-    public boolean addCourse(int studentId, String studentName, int courseId) {
+    // Add a course to the student's list
+    @Override
+    public boolean addCourse(int studentId, String studentName, int courseId) throws CourseLimitExceededException{
         return registerCourseDao.addCourse(studentId, studentName, courseId);
     }
 
-    // DeleteCourse
+    // Delete a course from the student's list
     public boolean deleteCourse(int studentId, int courseId) {
         return registerCourseDao.deleteCourse(studentId, courseId);
     }
 
-    //View marks by subject
+    //View marks by subject (Available after final registration has been submitted)
     @Override
     public void viewMarksByCourse(int studentId) {
-        List<Grade> gradeList = fetchReportCardDao.getMarksByCourse(studentId);
-        if (gradeList == null){
-            logger.info("Submit Registration to view your marks");
+        if(!registerStudentDao.checkRegistration(studentId)){
+            logger.info("Register to view your marks");
+            return;
         }
+
+        List<Grade> gradeList = fetchReportCardDao.getMarksByCourse(studentId);
         displayMarks(gradeList);
     }
 
-    // View registered course
+    // View courses currently added for registration
+    @Override
     public void viewRegisteredCourses(int studentId) {
         List<Course> list = viewRegisteredCoursesDao.viewRegisteredCourses(studentId);
         if(list != null){
@@ -66,11 +78,11 @@ public class StudentServiceOperation implements StudentServiceInterface, CourseL
         }
     }
 
-    //View Report Card
+    //View Report Card (Available after final registration has been submitted)
     @Override
     public void viewReportCard(int studentId) {
-        if(!registerStudentDao.checkRegistration(studentId)){
-            logger.info("Register to view your report card");
+        if(!registerStudentDao.checkRegistration(studentId)){ //Checks if the student is registered or not
+            logger.info("Register to view your report card");  
             return;
         }
         logger.info("*************** Report Card for student " + studentId + " *********************");
@@ -78,20 +90,19 @@ public class StudentServiceOperation implements StudentServiceInterface, CourseL
         if(!displayMarks(gradeList)){
             return;
         }
-        double sum = 0;
-        for(Grade grade: gradeList){
-            sum += grade.getMarks();
-        }
-        double percentage = sum / 4;
+        
+        double percentage = fetchReportCardDao.getFinalPercentage(studentId); //Calculates the final % of all courses
         logger.info("Final Percentage: " + percentage);
         if(percentage >= 50){
-            logger.info("Status: Passed");
+            logger.info("Status: Passed"); //Student is passed if % >= 50 else fail
         }else{
             logger.info("Status: Failed");
         }
         logger.info("**********************************************************************************");
     }
-
+    
+    //Displays marks for all enrolled subjects for a student
+    @Override	
     public boolean displayMarks(List<Grade> gradeList){
         if(gradeList != null){
             logger.info(String.format("%20s %20s %20s", "COURSE ID", "COURSE NAME", "MARKS"));
@@ -106,20 +117,22 @@ public class StudentServiceOperation implements StudentServiceInterface, CourseL
         }
         return false;
     }
-
+    
+    //Submits the registration with the chosen courses
+    @Override
     public void submitRegistration(int studentId){
-        if(registerStudentDao.checkRegistration(studentId)){
+        if(registerStudentDao.checkRegistration(studentId)){ //Can't register again once already registered
             logger.info("You are already registered");
             return;
         }
 
-        int enrolledCourses = registerCourseDao.courseLimitCheck(studentId);
+        int enrolledCourses = registerCourseDao.courseLimitCheck(studentId); //Checks if 4 courses have been selected by the student
         if(enrolledCourses < 4){
             logger.info("Please select 4 courses to submit your registration. You are currently enrolled in " + enrolledCourses + " courses");
             return;
         }
 
-        //Pay Fee
+        //Pay Fee in order to confirm the registration
         logger.info("Please pay the fee in order to confirm your registration. Below is a summary of your chosen courses");
         List<Payment> feeList = payFeeDao.fetchCourseFee(studentId);
         double fee = 0;
@@ -130,13 +143,13 @@ public class StudentServiceOperation implements StudentServiceInterface, CourseL
         }
         logger.info("Fee payable: " + fee);
 
-        double scholarshipAmount = payFeeDao.getScholarshipAmount(studentId);
+        double scholarshipAmount = payFeeDao.getScholarshipAmount(studentId); //Checks if a student has a scholarship or not
 
         if(scholarshipAmount != -1){
             double reduction = (scholarshipAmount/100) * fee;
             fee -= reduction;
         }
-        logger.info("Scholarship Amount for student " + studentId + " = " + scholarshipAmount + "%");
+        logger.info("Scholarship Amount for student " + studentId + " = " + scholarshipAmount + "%"); //Displays final fee
         logger.info("Fee after scholarship: " + fee);
         logger.info("Press Y to pay fee and N to cancel registration.");
         String ans = scn.nextLine();
@@ -147,7 +160,7 @@ public class StudentServiceOperation implements StudentServiceInterface, CourseL
         }
 
         int paymentId = 1;
-        logger.info("Enter mode: 1 - Card\n2 - Cash\n3 - Wallet");
+        logger.info("Enter mode: 1 - Card\n2 - Cash\n3 - Wallet"); //Asks for payment method
         try{
             paymentId = Integer.parseInt(scn.nextLine());
         }catch (NumberFormatException e){
@@ -157,21 +170,23 @@ public class StudentServiceOperation implements StudentServiceInterface, CourseL
 
         logger.info("Total fee paid: " + fee + "on " + localDate + " " + localTime.getHour() + ":" + localTime.getMinute() + " " + localDate.getDayOfWeek());
 
-        if(payFeeDao.insertIntoRegistration(studentId, paymentId, fee)){
+        if(payFeeDao.insertIntoRegistration(studentId, paymentId, fee)){ //The student is finally registered
             registerStudentDao.registerStudent(studentId);
         }
     }
-
-    public boolean canAddCourse(int studentId){
-        int enrolledCourses = registerCourseDao.courseLimitCheck(studentId);
+    
+    @Override
+    public boolean canAddCourse(int studentId){ //Helper function to check is a student can add more courses or not
+        int enrolledCourses = registerCourseDao.courseLimitCheck(studentId); //Max courses = 4
         if(enrolledCourses == 4){
             logger.info("You have reached the maximum course limit.");
             return false;
         }
         return true;
     }
-
-    public boolean checkForRegistration(int studentId){
+    
+    @Override
+    public boolean checkForRegistration(int studentId){ //Checks if a student is already registered, if yes then he can't add/delete more courses
         return registerStudentDao.checkRegistration(studentId);
     }
 }
