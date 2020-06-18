@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
 import com.flipkart.constant.SQLConstantQueries;
+import com.flipkart.exception.CannotAddMoreCourseException;
 import com.flipkart.exception.CourseLimitExceededException;
 import com.flipkart.utils.CloseConnectionInterface;
 import com.flipkart.utils.DBUtil;
@@ -25,7 +26,7 @@ public class RegisterCourseDaoImpl implements RegisterCourseDao, CloseConnection
      */
     
     @Override
-    public boolean addCourse(int studentId, String studentName, int courseId) throws CourseLimitExceededException{
+    public boolean addCourse(int studentId, String studentName, int courseId) throws CourseLimitExceededException, CannotAddMoreCourseException{
         Connection conn = DBUtil.getConnection();
         PreparedStatement statement = null;
         PreparedStatement statement1 = null;
@@ -57,7 +58,10 @@ public class RegisterCourseDaoImpl implements RegisterCourseDao, CloseConnection
                 int rows = statement.executeUpdate();
                 return rows == 1;
 
-            }else if(count == -1){
+            }else if(count > 4){
+            	throw new CannotAddMoreCourseException(courseId);
+            }
+            else if(count == -1){
                 logger.error("SQL Error");
                 return false;
             }else{

@@ -54,12 +54,9 @@ public class StudentDaoImpl implements StudentDao, CloseConnectionInterface {
             statement.setInt(1, studentId);
             int row = statement.executeUpdate();
             //deleteStudentRegistration(studentId);
-            if(!updateCountsOfCourses(studentId)){
-                logger.error("Could not update count of students");
-            }
-            if(!deleteRegisteredCourses(studentId)){
-                logger.error("Could not delete registered courses of the student");
-            }
+            updateCountsOfCourses(studentId);
+            deleteRegisteredCourses(studentId);
+            
             return row == 1;
         }catch (SQLException e){
             logger.error(e.getMessage());

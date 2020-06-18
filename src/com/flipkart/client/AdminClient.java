@@ -96,19 +96,27 @@ public class AdminClient {
         user.setPassword(scn.nextLine());
         logger.info("Enter role");
         String role = scn.nextLine();
-        if(!adminServiceOperation.createUser(user)){
-            return;
-        }
+        
         switch (role){ //Check role
             case "student":
-                user.setRoleId(3);
+            	user.setRoleId(3);
+            	if(!adminServiceOperation.createUser(user)){
+            		return;
+            	}
                 createStudent(userId); //Create a new student if role == student
                 break;
             case "professor":
-                user.setRoleId(2);
+            	user.setRoleId(2);
+            	if(!adminServiceOperation.createUser(user)){
+            		return;
+            	}
                 createProfessor(userId); //Create a new professor if role == professor
+                break;
             case "admin":
-                user.setRoleId(1);
+            	user.setRoleId(1);
+            	if(!adminServiceOperation.createUser(user)){
+            		return;
+            	}
                 createAdmin(userId); //Else create an admin
                 break;
         }
@@ -128,7 +136,7 @@ public class AdminClient {
 
     
     public static void createAdmin(int adminId){
-
+    	
     }
     
     //Create a new course for the catalog
@@ -225,6 +233,7 @@ public class AdminClient {
     //Fetches all student details from the user while creating a new student
     public static Student getStudentDetails(int studentId){
         Student student = new Student();
+        student.setRoleId(3);
         student.setId(studentId);
         logger.info("Enter name");
         student.setName(scn.nextLine());
@@ -240,6 +249,7 @@ public class AdminClient {
     //Fetches all professor details from the user while creating a new professor
     public static Professor getProfessorDetails(int professorId){
         Professor professor = new Professor();
+        professor.setRoleId(2);
         professor.setId(professorId);
         logger.info("Enter name");
         professor.setName(scn.nextLine());

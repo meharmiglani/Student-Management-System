@@ -13,6 +13,7 @@ import com.flipkart.dao.PayFeeDaoImpl;
 import com.flipkart.dao.RegisterCourseDaoImpl;
 import com.flipkart.dao.RegisterStudentDaoImpl;
 import com.flipkart.dao.ViewRegisteredCoursesDaoImpl;
+import com.flipkart.exception.CannotAddMoreCourseException;
 import com.flipkart.exception.CourseLimitExceededException;
 import com.flipkart.model.Course;
 import com.flipkart.model.Grade;
@@ -45,7 +46,7 @@ public class StudentServiceOperation implements StudentServiceInterface, CourseL
 
     // Add a course to the student's list
     @Override
-    public boolean addCourse(int studentId, String studentName, int courseId) throws CourseLimitExceededException{
+    public boolean addCourse(int studentId, String studentName, int courseId) throws CourseLimitExceededException, CannotAddMoreCourseException{
         return registerCourseDao.addCourse(studentId, studentName, courseId);
     }
 

@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import org.apache.log4j.Logger;
 
+import com.flipkart.exception.CannotAddMoreCourseException;
 import com.flipkart.exception.CourseLimitExceededException;
 import com.flipkart.exception.UserNotFoundException;
 import com.flipkart.service.StudentServiceOperation;
@@ -108,6 +109,8 @@ public class StudentClient {
 	                logger.info("Course successfully added!");
 	            }
             
+            }catch(CannotAddMoreCourseException e){
+            	logger.info(e.receiveMessage());
             }catch(CourseLimitExceededException e){ 
             	logger.info(e.getCourse());
             }
