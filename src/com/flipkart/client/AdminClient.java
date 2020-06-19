@@ -136,7 +136,7 @@ public class AdminClient {
 
     
     public static void createAdmin(int adminId){
-    	
+    	logger.info("Admin created");
     }
     
     //Create a new course for the catalog

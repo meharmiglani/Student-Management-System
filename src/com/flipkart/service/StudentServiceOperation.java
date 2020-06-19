@@ -138,18 +138,22 @@ public class StudentServiceOperation implements StudentServiceInterface, CourseL
         List<Payment> feeList = payFeeDao.fetchCourseFee(studentId);
         double fee = 0;
         logger.info(String.format("%20s %20s %20s", "COURSE ID", "COURSE NAME", "FEE"));
+        
+        //Calculate total fee for all subjects
         for(Payment payment: feeList){
             fee += payment.getFee();
             logger.info(String.format("%20s %20s %20s", payment.getCourseId(), payment.getCourseName(), payment.getFee()));
         }
         logger.info("Fee payable: " + fee);
-
+        
+        //Retrieve the scholarship amount
         double scholarshipAmount = payFeeDao.getScholarshipAmount(studentId); //Checks if a student has a scholarship or not
 
         if(scholarshipAmount != -1){
             double reduction = (scholarshipAmount/100) * fee;
             fee -= reduction;
         }
+        
         logger.info("Scholarship Amount for student " + studentId + " = " + scholarshipAmount + "%"); //Displays final fee
         logger.info("Fee after scholarship: " + fee);
         logger.info("Press Y to pay fee and N to cancel registration.");

@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
 import com.flipkart.constant.SQLConstantQueries;
+import com.flipkart.exception.UserNotFoundException;
 import com.flipkart.model.User;
 import com.flipkart.utils.CloseConnectionInterface;
 import com.flipkart.utils.DBUtil;
@@ -18,7 +19,7 @@ public class UserDaoImpl implements UserDao, CloseConnectionInterface {
 
     //Checks for authentication whie logging in
     @Override
-    public int checkIdentity(String username, String password) {
+    public int checkIdentity(String username, String password) throws UserNotFoundException{
         Connection conn = DBUtil.getConnection();
         PreparedStatement statement = null;
 
@@ -30,8 +31,10 @@ public class UserDaoImpl implements UserDao, CloseConnectionInterface {
 
             if (result.next()) {
                 return result.getInt(1);
+            }else{
+            	throw new UserNotFoundException(username);
             }
-            return -1;
+            
         }catch (SQLException e){
             logger.error(e.getMessage());
             return -1;
@@ -42,7 +45,7 @@ public class UserDaoImpl implements UserDao, CloseConnectionInterface {
 
     //Fetches a student's name based on his id
     @Override
-    public String getStudentName(int studentId) {
+    public String getStudentName(int studentId) throws UserNotFoundException{
         Connection conn = DBUtil.getConnection();
         PreparedStatement statement = null;
 
@@ -53,10 +56,9 @@ public class UserDaoImpl implements UserDao, CloseConnectionInterface {
 
             if(resultSet.next()){
                 return resultSet.getString(1);
+            }else{
+            	throw new UserNotFoundException(Integer.toString(studentId));
             }
-
-            logger.error("No such student found");
-            return "";
 
         }catch (SQLException e){
             logger.error(e.getMessage());

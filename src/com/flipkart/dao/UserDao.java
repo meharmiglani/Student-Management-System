@@ -1,10 +1,11 @@
 package com.flipkart.dao;
 
+import com.flipkart.exception.UserNotFoundException;
 import com.flipkart.model.User;
 
 public interface UserDao {
-    int checkIdentity(String username, String password);
-    String getStudentName(int studentId);
+    int checkIdentity(String username, String password) throws UserNotFoundException;
+    String getStudentName(int studentId) throws UserNotFoundException;
     int getRole(String username, String password);
     boolean createUser(User user);
     int getRoleById(int userId);

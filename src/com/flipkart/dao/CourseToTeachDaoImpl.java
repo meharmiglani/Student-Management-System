@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.flipkart.constant.SQLConstantQueries;
+import com.flipkart.exception.NoCourseFoundException;
 import com.flipkart.model.Course;
 import com.flipkart.utils.CloseConnectionInterface;
 import com.flipkart.utils.DBUtil;
@@ -20,7 +21,7 @@ public class CourseToTeachDaoImpl implements CourseToTeachDao, CloseConnectionIn
 
     //Professor can select a course to teach
     @Override
-    public boolean selectCourse(int professorId, int courseId){
+    public boolean selectCourse(int professorId, int courseId) throws NoCourseFoundException{
         Connection conn = DBUtil.getConnection();
         PreparedStatement statement = null;
         PreparedStatement statement1 = null;
@@ -30,13 +31,15 @@ public class CourseToTeachDaoImpl implements CourseToTeachDao, CloseConnectionIn
             statement.setInt(2, courseId);
             statement.setInt(3, 0);
             int row = statement.executeUpdate();
-
+            if(row != 1){
+            	throw new NoCourseFoundException(courseId);
+            }
             statement1 = conn.prepareStatement(SQLConstantQueries.SELECT_COURSE_TO_TEACH_PROFESSOR_2);
             statement1.setInt(1, professorId);
             statement1.setInt(2, courseId);
             int row1 = statement1.executeUpdate();
 
-            return row == 1 && row1 == 1;
+            return row1 == 1;
 
         }catch (SQLException e){
             logger.info(e.getMessage());

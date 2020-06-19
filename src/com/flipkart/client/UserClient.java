@@ -16,7 +16,7 @@ public class UserClient {
     private final static UserOperation userOperation = new UserOperation();
     private final static LocalDate localDate = LocalDate.now();
     private final static LocalTime localTime = LocalTime.now();
-
+    
     public static void main(String[] args){
         logger.info("Enter your username"); //Log in system - asks for the username and password
         String username = scn.nextLine();
@@ -46,7 +46,7 @@ public class UserClient {
             logger.info("***************** " + roleType.toUpperCase() + " SECTION ***************");
             logger.info("You have successfully logged in as " + username + " on " + localDate + " " + localTime.getHour() + ":" + localTime.getMinute() + " " + localDate.getDayOfWeek());
         }else{
-            logger.error("Login Failed"); //Authorization failed
+            logger.error("Login Failed. Check your username or password. Login again"); //Authorization failed
             return;
         }
 

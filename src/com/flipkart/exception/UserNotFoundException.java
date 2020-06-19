@@ -8,6 +8,6 @@ public class UserNotFoundException extends Exception{
     }
 
     public String getUser() {
-        return user;
+        return user + " does not exist";
     }
 }

@@ -16,12 +16,12 @@ public class UserOperation implements UserInterface{
         }
     }
 
-    public String getStudentName(int studentId) throws UserNotFoundException{
+    public String getStudentName(int studentId) throws UserNotFoundException {
         String name = userDao.getStudentName(studentId);
         if(!name.equals("")){
-            return name;
+        	return name;
         }else{
-            throw new UserNotFoundException("User does not exist");
+        	throw new UserNotFoundException(name);
         }
     }
 

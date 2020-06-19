@@ -8,6 +8,7 @@ import com.flipkart.dao.CourseToTeachDaoImpl;
 import com.flipkart.dao.RegisterStudentDaoImpl;
 import com.flipkart.dao.UpdateMarksDaoImpl;
 import com.flipkart.dao.ViewStudentListDaoImpl;
+import com.flipkart.exception.NoCourseFoundException;
 import com.flipkart.model.Course;
 import com.flipkart.model.StudentList;
 
@@ -50,7 +51,7 @@ public class ProfessorServiceOperation implements ProfessorServiceInterface{
 
     // Select a course to teach
     @Override
-    public void selectCourseToTeach(int professorId, int courseId){
+    public void selectCourseToTeach(int professorId, int courseId) throws NoCourseFoundException{
         if(courseToTeachDao.selectCourse(professorId, courseId)){
             logger.info("Course has been selected");
         }else{

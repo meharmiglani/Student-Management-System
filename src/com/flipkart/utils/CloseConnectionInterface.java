@@ -1,13 +1,16 @@
 package com.flipkart.utils;
 
-import org.apache.log4j.Logger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import org.apache.log4j.Logger;
+
+//Default interface for closing the connection with the db
 public interface CloseConnectionInterface {
     Logger logger = Logger.getLogger(CloseConnectionInterface.class);
 
+    //Closes the statement
     default void closeStatement(PreparedStatement statement){
         try {
             if(statement != null) {
@@ -18,6 +21,7 @@ public interface CloseConnectionInterface {
         }
     }
 
+    //Closes a statement and a connection
     default void closeConnection(PreparedStatement statement, Connection conn){
 
         try {

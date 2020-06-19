@@ -1,8 +1,11 @@
 package com.flipkart.client;
 
-import com.flipkart.service.ProfessorServiceOperation;
-import org.apache.log4j.Logger;
 import java.util.Scanner;
+
+import org.apache.log4j.Logger;
+
+import com.flipkart.exception.NoCourseFoundException;
+import com.flipkart.service.ProfessorServiceOperation;
 
 public class ProfessorClient {
     private final static Logger logger = Logger.getLogger(ProfessorClient.class);
@@ -84,7 +87,11 @@ public class ProfessorClient {
     public static void selectCourses(int professorId){
         logger.info("Enter the courseID you want to teach");
         int courseId = Integer.parseInt(scn.nextLine());
-        professorServiceOperation.selectCourseToTeach(professorId, courseId);
+        try{
+        	professorServiceOperation.selectCourseToTeach(professorId, courseId);
+        }catch(NoCourseFoundException e){
+        	logger.info(e.getMessage());
+        }
     }
     
     //Update marks of a student in a particular course
